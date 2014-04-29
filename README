@@ -1,0 +1,9 @@
+auxiliary functions used in many other projects:
+
+- string manipulations
+
+- HTTP downloader
+
+- convenience wrappers
+
+LICENSE: GPLv3, cc by-sa 3.0 with attribution required and other
