@@ -83,7 +83,8 @@ EXE=
 #vpath %.cpp .
 
 SRCC = dummy_logger.cpp sprintf.cpp number_format.cpp vformat.cpp gen_random_string.cpp HTTPDownloader.cpp \
-		remove_extra_spaces.cpp
+		remove_extra_spaces.cpp \
+		tune_wav.cpp
 OBJS = $(patsubst %.cpp,$(OBJDIR)/%.o,$(SRCC))
 
 TYPES_H = types.h
