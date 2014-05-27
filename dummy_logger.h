@@ -19,11 +19,32 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Id: dummy_logger.h 386 2014-04-15 16:26:53Z serge $
+// $Id: dummy_logger.h 581 2014-05-26 17:45:50Z serge $
 
 #ifndef DUMMY_LOGGER_H
 #define DUMMY_LOGGER_H
 
+struct log_levels_log4j
+{
+    enum levels
+    {
+        OFF     = 0,
+        FATAL,
+        ERROR,
+        WARN,
+        INFO,
+        DEBUG,
+        TRACE
+    };
+};
+
 void dummy_log( const int level, const char *module_name, const char *fmt, ... );
+
+#define dummy_log_fatal( _mod, _fmt, ... )      dummy_log( log_levels_log4j::FATAL, _mod, _fmt, ##__VA_ARGS__ )
+#define dummy_log_error( _mod, _fmt, ... )      dummy_log( log_levels_log4j::ERROR, _mod, _fmt, ##__VA_ARGS__ )
+#define dummy_log_warn( _mod, _fmt, ... )       dummy_log( log_levels_log4j::WARN,  _mod, _fmt, ##__VA_ARGS__ )
+#define dummy_log_info( _mod, _fmt, ... )       dummy_log( log_levels_log4j::INFO,  _mod, _fmt, ##__VA_ARGS__ )
+#define dummy_log_debug( _mod, _fmt, ... )      dummy_log( log_levels_log4j::DEBUG, _mod, _fmt, ##__VA_ARGS__ )
+#define dummy_log_trace( _mod, _fmt, ... )      dummy_log( log_levels_log4j::TRACE, _mod, _fmt, ##__VA_ARGS__ )
 
 #endif // DUMMY_LOGGER_H
