@@ -63,7 +63,7 @@ CC=gcc
 
 LDSHARED=gcc
 CPP=gcc -E
-INCL = -I$(BOOST_INC) -I.
+INCL = -I$(BOOST_INC)
 
 
 STATICLIB=$(LIBNAME).a
