@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Id: dummy_logger.h 708 2014-07-03 17:37:21Z serge $
+// $Id: dummy_logger.h 853 2014-07-30 17:09:52Z serge $
 
 #ifndef DUMMY_LOGGER_H
 #define DUMMY_LOGGER_H
@@ -39,11 +39,11 @@ void dummy_log( const int level, const char *module_name, const char *fmt, ... )
 
 void dummy_log_set_log_level( const log_levels_log4j level );
 
-#define dummy_log_fatal( _mod, _fmt, ... )      dummy_log( ( int ) log_levels_log4j::FATAL, _mod, _fmt, ##__VA_ARGS__ )
-#define dummy_log_error( _mod, _fmt, ... )      dummy_log( ( int ) log_levels_log4j::ERROR, _mod, _fmt, ##__VA_ARGS__ )
-#define dummy_log_warn( _mod, _fmt, ... )       dummy_log( ( int ) log_levels_log4j::WARN,  _mod, _fmt, ##__VA_ARGS__ )
-#define dummy_log_info( _mod, _fmt, ... )       dummy_log( ( int ) log_levels_log4j::INFO,  _mod, _fmt, ##__VA_ARGS__ )
-#define dummy_log_debug( _mod, _fmt, ... )      dummy_log( ( int ) log_levels_log4j::DEBUG, _mod, _fmt, ##__VA_ARGS__ )
-#define dummy_log_trace( _mod, _fmt, ... )      dummy_log( ( int ) log_levels_log4j::TRACE, _mod, _fmt, ##__VA_ARGS__ )
+#define dummy_log_fatal( _mod, _fmt, ... )      ::dummy_log( ( int ) log_levels_log4j::FATAL, _mod, _fmt, ##__VA_ARGS__ )
+#define dummy_log_error( _mod, _fmt, ... )      ::dummy_log( ( int ) log_levels_log4j::ERROR, _mod, _fmt, ##__VA_ARGS__ )
+#define dummy_log_warn( _mod, _fmt, ... )       ::dummy_log( ( int ) log_levels_log4j::WARN,  _mod, _fmt, ##__VA_ARGS__ )
+#define dummy_log_info( _mod, _fmt, ... )       ::dummy_log( ( int ) log_levels_log4j::INFO,  _mod, _fmt, ##__VA_ARGS__ )
+#define dummy_log_debug( _mod, _fmt, ... )      ::dummy_log( ( int ) log_levels_log4j::DEBUG, _mod, _fmt, ##__VA_ARGS__ )
+#define dummy_log_trace( _mod, _fmt, ... )      ::dummy_log( ( int ) log_levels_log4j::TRACE, _mod, _fmt, ##__VA_ARGS__ )
 
 #endif // DUMMY_LOGGER_H
