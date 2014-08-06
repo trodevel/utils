@@ -19,41 +19,202 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Id: dummy_logger.cpp 709 2014-07-03 17:52:00Z serge $
+// $Id: dummy_logger.cpp 889 2014-08-04 14:09:43Z serge $
 
 
 #include "dummy_logger.h"       // self
-#include "vformat.h"            // vformat
+
+#include <functional>           // std::hash
 #include <iostream>             // cout
+#include <map>                  // std::map
+//#include <unordered_map>
+#include "vformat.h"            // vformat
 
 #ifndef NOTHREAD
 #include <boost/thread.hpp>     // boost::mutex
 #include "wrap_mutex.h"         // SCOPE_LOCK
 #endif
 
-struct DummyLoggerState
-{
-    log_levels_log4j max_log_level;
-};
+namespace dummy_logger {
 
-DummyLoggerState    gl_dummy_logger_state   = { log_levels_log4j::INFO };
+#ifdef NOTHREAD
+#define DL_SCOPE_LOCK(_x)
+#define DL_LOCK(_x)
+#define DL_UNLOCK(_x)
+#else
+#define DL_SCOPE_LOCK(_x)       SCOPE_LOCK(_x)
+#define DL_LOCK(_x)             _x.lock()
+#define DL_UNLOCK(_x)           _x.unlock()
+#endif
 
-void dummy_log_core( const char *module_name, const std::string & msg )
+struct State
 {
+    struct Module
+    {
+        log_levels_log4j    max_log_level;
+        std::string         name;
+
+        bool can_log( log_levels_log4j level ) const
+        {
+            return level <= max_log_level;
+        }
+    };
+
+    typedef std::map< unsigned int, Module >    MapModuleIdToModule;
+
+    bool register_module( unsigned int module_id, const std::string & name, log_levels_log4j level )
+    {
+        DL_SCOPE_LOCK( mutex_ );
+
+        Module m = { level, name };
+
+        module_map_[ module_id ] = m;
+
+        return true;
+    }
+
+    bool can_log( log_levels_log4j level ) const
+    {
+        DL_SCOPE_LOCK( mutex_ );
+
+        return level <= max_log_level_;
+    }
+
+    void set_log_level( const log_levels_log4j level )
+    {
+        DL_SCOPE_LOCK( mutex_ );
+
+        max_log_level_   = level;
+
+    }
+    void set_log_level( unsigned int module_id, const log_levels_log4j level )
+    {
+        DL_SCOPE_LOCK( mutex_ );
+
+        module_map_[ module_id ].max_log_level = level;
+    }
+
+    const Module & get_module_and_lock( unsigned int module_id ) const
+    {
+        DL_LOCK( mutex_ );
+
+        MapModuleIdToModule::const_iterator it = module_map_.find( module_id );
+
+        if( it == module_map_.end() )
+        {
+            DL_UNLOCK( mutex_ );
+
+            return empty_mod;
+        }
+
+        return ( *it ).second;
+    }
+
+    void unlock() const
+    {
+        DL_UNLOCK( mutex_ );
+    }
+
+
+    void log__no_lock( const log_levels_log4j level, const Module & m , const char *fmt, va_list ap )
+    {
+        if( m.can_log( level ) == false )
+            return;
+
+        std::string res = vformat( fmt, ap );
+
+        output__( m, res );
+    }
+
+    void log( const log_levels_log4j level, unsigned int module_id, const char *fmt, ... )
+    {
+        DL_SCOPE_LOCK( mutex_ );
+
+        const Module & m = get_module__( module_id );
+
+        if( & m == & empty_mod )
+            return;
+
+        va_list ap;
+        va_start( ap, fmt );
+
+        log__no_lock( level, m, fmt, ap );
+
+        va_end( ap );
+    }
+
+    void log( const char *module_name, const std::string & msg )
+    {
+        DL_SCOPE_LOCK( mutex_ );
+
+        output__( module_name, msg );
+    }
+
+private:
+
+    void output__( const Module & m, const std::string & msg )
+    {
+        std::cout << m.name << ": " << msg << std::endl;
+    }
+
+    void output__( const char *module_name, const std::string & msg )
+    {
+        std::cout << module_name << ": " << msg << std::endl;
+    }
+
+
+    const Module & get_module__( unsigned int module_id ) const
+    {
+        MapModuleIdToModule::const_iterator it = module_map_.find( module_id );
+
+        if( it == module_map_.end() )
+            return empty_mod;
+
+        return ( *it ).second;
+    }
+
+
+public:
+    static const Module         empty_mod_;
+    static const Module         & empty_mod;
+
+private:
+
 #ifndef NOTHREAD
-
-    static boost::mutex mutex;
-
-    SCOPE_LOCK( mutex );
-
+    mutable boost::mutex        mutex_;
 #endif // NOTHREAD
 
-    std::cout << module_name << ": " << msg << std::endl;
+    log_levels_log4j            max_log_level_   = log_levels_log4j::INFO;
+
+    MapModuleIdToModule         module_map_;
+};
+
+const State::Module    State::empty_mod_    = { log_levels_log4j::OFF };
+const State::Module    & State::empty_mod   = State::empty_mod_;
+
+State    state;
+
+void log( const log_levels_log4j level, unsigned int module_id, const char *fmt, ... )
+{
+    const State::Module & m = state.get_module_and_lock( module_id );
+
+    if( & m == & State::empty_mod )
+        return;
+
+    va_list ap;
+    va_start( ap, fmt );
+
+    state.log__no_lock( level, m, fmt, ap );
+
+    va_end( ap );
+
+    state.unlock();
 }
 
-void dummy_log( const int level, const char *module_name, const char *fmt, ... )
+// old version for macro compatibility
+void log( const log_levels_log4j level, const char *module_name, const char *fmt, ... )
 {
-    if( level > ( int ) gl_dummy_logger_state.max_log_level )
+    if( state.can_log( level ) == false )
         return;
 
     std::string res;
@@ -63,10 +224,59 @@ void dummy_log( const int level, const char *module_name, const char *fmt, ... )
     res = vformat( fmt, ap );
     va_end( ap );
 
-    dummy_log_core( module_name, res );
+    state.log( module_name, res );
+}
+
+
+
+unsigned int get_hash( const std::string & module_name )
+{
+    size_t hash = std::hash<std::string>()( module_name );
+    return ( unsigned int ) hash;
+}
+
+unsigned int register_module( const std::string & module_name )
+{
+    unsigned int hash = get_hash( module_name );
+
+    bool b = state.register_module( hash, module_name, log_levels_log4j::INFO );
+
+    return b ? hash : 0;
+}
+
+unsigned int register_module( const char *module_name )
+{
+    return register_module( std::string ( module_name ) );
+}
+
+void set_log_level( const log_levels_log4j level )
+{
+    state.set_log_level( level );
+}
+
+void set_log_level( unsigned int module_id, const log_levels_log4j level )
+{
+    state.set_log_level( module_id, level );
+}
+
+} // namespace dummy_logger
+
+void dummy_log( const int level, const char *module_name, const char *fmt, ... )
+{
+    if( dummy_logger::state.can_log( ( log_levels_log4j )level ) == false )
+        return;
+
+    std::string res;
+    va_list ap;
+    va_start( ap, fmt );
+
+    res = vformat( fmt, ap );
+    va_end( ap );
+
+    dummy_logger::state.log( module_name, res );
 }
 
 void dummy_log_set_log_level( const log_levels_log4j level )
 {
-    gl_dummy_logger_state.max_log_level = level;
+    dummy_logger::set_log_level( level );
 }
