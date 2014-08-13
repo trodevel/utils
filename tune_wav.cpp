@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Id: tune_wav.cpp 491 2014-05-02 17:43:28Z serge $
+// $Id: tune_wav.cpp 468 2014-05-02 17:43:28Z serge $
 
 #include "tune_wav.h"       // self
 

@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Id: dummy_logger.h 887 2014-08-04 13:45:07Z serge $
+// $Id: dummy_logger.h 914 2014-08-13 17:29:04Z serge $
 
 #ifndef DUMMY_LOGGER_H
 #define DUMMY_LOGGER_H
@@ -53,6 +53,7 @@ void log( const log_levels_log4j level, const char *module_name, const char *fmt
 unsigned int register_module( const char *module_name );
 void set_log_level( const log_levels_log4j level );
 void set_log_level( unsigned int module_id, const log_levels_log4j level );
+void set_level_output( bool b );
 
 } // namespace dummy_logger
 

@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Id: generate_types_h.c 479 2014-04-29 18:03:42Z serge $
+// $Id: generate_types_h.c 456 2014-04-29 18:03:42Z serge $
 
 #include <stdio.h>
 

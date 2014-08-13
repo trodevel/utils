@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Id: word_size.c 466 2014-04-29 17:00:00Z serge $
+// $Id: word_size.c 443 2014-04-29 17:00:00Z serge $
 
 #include <stdio.h>
 

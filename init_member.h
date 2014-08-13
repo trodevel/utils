@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Id: init_member.h 464 2014-04-29 16:58:45Z serge $
+// $Id: init_member.h 441 2014-04-29 16:58:45Z serge $
 
 #ifndef INIT_MEMBER_H
 #define INIT_MEMBER_H

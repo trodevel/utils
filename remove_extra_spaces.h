@@ -9,7 +9,7 @@ author: http://stackoverflow.com/users/440119/benjamin-lindley
 
 */
 
-// $Id: remove_extra_spaces.h 461 2014-04-29 16:53:02Z serge $
+// $Id: remove_extra_spaces.h 438 2014-04-29 16:53:02Z serge $
 
 #ifndef REMOVE_EXTRA_SPACES_H
 #define REMOVE_EXTRA_SPACES_H

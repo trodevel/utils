@@ -36,7 +36,7 @@ regarding licensing.
 
 */
 
-// $Id: HTTPDownloader.cpp 400 2014-04-16 17:12:30Z serge $
+// $Id: HTTPDownloader.cpp 377 2014-04-16 17:12:30Z serge $
 #include "HTTPDownloader.hpp"
 #include <curl/curl.h>
 #include <curl/easy.h>

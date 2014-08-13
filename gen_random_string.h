@@ -9,7 +9,7 @@ author: http://stackoverflow.com/users/13760/carl
 
 */
 
-// $Id: gen_random_string.h 441 2014-04-23 23:10:16Z serge $
+// $Id: gen_random_string.h 418 2014-04-23 23:10:16Z serge $
 
 
 #ifndef GEN_RANDOM_STRING_H

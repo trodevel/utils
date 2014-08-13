@@ -9,7 +9,7 @@ author: http://stackoverflow.com/users/13760/carl
 
 */
 
-// $Id: gen_random_string.cpp 441 2014-04-23 23:10:16Z serge $
+// $Id: gen_random_string.cpp 418 2014-04-23 23:10:16Z serge $
 
 #include "gen_random_string.h"  // self
 
