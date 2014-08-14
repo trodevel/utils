@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Id: wrap_mutex.h 444 2014-04-29 17:02:35Z serge $
+// $Id: wrap_mutex.h 930 2014-08-14 09:46:41Z serge $
 
 #ifndef _WRAP_MUTEX_H_
 #define _WRAP_MUTEX_H_
@@ -30,5 +30,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #define CPP_BROADCAST_COND(_x)
 #define SCOPE_LOCK(_x)          boost::mutex::scoped_lock _scoped_lock##_x(_x)
 #define THREAD_SLEEP_MS(_x)     boost::this_thread::sleep( boost::posix_time::milliseconds( _x ) )
+#define THREAD_SLEEP_SEC(_x)    boost::this_thread::sleep( boost::posix_time::seconds( _x ) )
 
 #endif // _WRAP_MUTEX_H_
