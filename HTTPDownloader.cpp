@@ -36,7 +36,7 @@ regarding licensing.
 
 */
 
-// $Id: HTTPDownloader.cpp 377 2014-04-16 17:12:30Z serge $
+// $Id: HTTPDownloader.cpp 1022 2014-09-18 17:45:21Z serge $
 #include "HTTPDownloader.hpp"
 #include <curl/curl.h>
 #include <curl/easy.h>
@@ -111,6 +111,19 @@ bool HTTPDownloader::download_file( const std::string& url, const std::string & 
         fprintf( stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror( res ) );
         return false;
     }
+
+    if ( out.fail() == true )
+    {
+        fprintf( stderr, "download_file() failed: %s\n", "writing to file failed" );
+        return false;
+    }
+
+    if ( out.tellp() == 0 )
+    {
+        fprintf( stderr, "download_file() failed: %s\n", "got not data" );
+        return false;
+    }
+
     return true;
 }
 
