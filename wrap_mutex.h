@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Id: wrap_mutex.h 930 2014-08-14 09:46:41Z serge $
+// $Revision: 1404 $ $Date:: 2015-01-16 #$ $Author: serge $
 
 #ifndef _WRAP_MUTEX_H_
 #define _WRAP_MUTEX_H_

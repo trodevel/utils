@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
-// $Id: assert.h 460 2014-04-30 16:38:32Z serge $
+// $Revision: 1404 $ $Date:: 2015-01-16 #$ $Author: serge $
 
 #ifndef UTILS_ASSERT_H
 #define UTILS_ASSERT_H

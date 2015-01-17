@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Id: tune_wav.h 467 2014-05-02 17:42:09Z serge $
+// $Revision: 1404 $ $Date:: 2015-01-16 #$ $Author: serge $
 
 #ifndef UTILS_TUNE_WAV_H
 #define UTILS_TUNE_WAV_H
