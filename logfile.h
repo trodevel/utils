@@ -19,12 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1559 $ $Date:: 2015-03-03 #$ $Author: serge $
+// $Revision: 1561 $ $Date:: 2015-03-05 #$ $Author: serge $
 
 #ifndef LIB_UTILS_LOGFILE_H
 #define LIB_UTILS_LOGFILE_H
 
 #include <boost/date_time/posix_time/posix_time.hpp>    // boost::posix_time::ptime
+#include <fstream>      // std::ofstream
 
 #include "types.h"      // uint32
 
@@ -42,18 +43,25 @@ public:
 private:
 
     static std::string create_interval_filename(
-            const std::string               & filename_mask,
-            uint32                          rotation_interval_min,
-            const boost::posix_time::ptime  & time );
+            const std::string                       & filename_mask,
+            const boost::posix_time::time_duration  & rotation_interval,
+            const boost::posix_time::ptime          & time );
+
+    void write__( const std::string & s );
+
+    bool is_interval_ended();
+    void switch_to_next();
+    void create_filename_and_open_file();
 
 private:
 
-    std::string     filename_mask_;
-    uint32          rotation_interval_min_;
+    std::string                 filename_mask_;
 
-    boost::posix_time::ptime    current_interval_end_;
+    boost::posix_time::time_duration    rotation_interval_;
+    boost::posix_time::ptime            current_interval_end_;
 
-    std::string     current_filename_;
+    std::string                 current_filename_;
+    std::ofstream               ofs_;
 };
 
 
