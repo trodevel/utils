@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1565 $ $Date:: 2015-03-10 #$ $Author: serge $
+// $Revision: 1571 $ $Date:: 2015-03-11 #$ $Author: serge $
 
 
 #include "logfile.h"      // self
@@ -28,9 +28,9 @@ Logfile::Logfile( const std::string & filename, uint32 rotation_interval_min ):
     filename_mask_( filename )
 {
     rotation_interval_      = boost::posix_time::minutes( rotation_interval_min );
-    current_interval_end_   = boost::posix_time::second_clock::universal_time(); // initialize with current time
+    current_interval_end_   = get_now(); // initialize with current time
 
-    create_filename_and_open_file();
+    create_filename_and_open_file( current_interval_end_ );
 
     current_interval_end_   += rotation_interval_;
 }
@@ -60,36 +60,55 @@ void Logfile::write( const std::string & s )
 }
 void Logfile::write__( const std::string & s )
 {
-    if( is_interval_ended() )
+    boost::posix_time::ptime now = get_now();
+
+    if( is_interval_ended( now ) )
     {
-        switch_to_next();
+        switch_to_next( now );
     }
 
     ofs_ << s;
 }
 
-bool Logfile::is_interval_ended()
+boost::posix_time::ptime Logfile::get_now()
 {
-    boost::posix_time::ptime    now( boost::posix_time::second_clock::universal_time() );
+    return boost::posix_time::second_clock::universal_time();
+}
 
+bool Logfile::is_interval_ended( const boost::posix_time::ptime & now )
+{
     if( now > current_interval_end_ )
         return true;
 
     return false;
 }
 
-void Logfile::switch_to_next()
+void Logfile::switch_to_next( const boost::posix_time::ptime & now )
 {
     ofs_.close();
 
-    create_filename_and_open_file();
+    boost::posix_time::ptime interval_start = rotate_to_time( now );
 
-    current_interval_end_   += rotation_interval_;
+    create_filename_and_open_file( interval_start );
+
+    current_interval_end_   = interval_start + rotation_interval_;
 }
 
-void Logfile::create_filename_and_open_file()
+boost::posix_time::ptime Logfile::rotate_to_time( const boost::posix_time::ptime & now )
 {
-    current_filename_   = create_interval_filename( filename_mask_, rotation_interval_, current_interval_end_ );
+    boost::posix_time::ptime res    = current_interval_end_;
+
+    while( res + rotation_interval_ < now )
+    {
+        res += rotation_interval_;
+    }
+
+    return res;
+}
+
+void Logfile::create_filename_and_open_file( const boost::posix_time::ptime & current_interval_start )
+{
+    current_filename_   = create_interval_filename( filename_mask_, rotation_interval_, current_interval_start );
 
     ofs_.open( current_filename_.c_str() );
 
@@ -112,15 +131,17 @@ std::string Logfile::create_interval_filename(
 
     os << filename_mask << "_";
 
-    os << date.year() << date.month() << date.day();
+    os << std::setfill( '0' );
+
+    os << std::setw( 4 ) << date.year() << std::setw( 2 ) << date.month().as_number() << std::setw( 2 ) << date.day();
 
     if( mins > 0 )
     {
-        os << time.time_of_day().hours() << time.time_of_day().minutes();
+        os << "_" << time.time_of_day().hours() << time.time_of_day().minutes();
     }
     else if( hours > 0 )
     {
-        os << time.time_of_day().hours();
+        os << "_" << time.time_of_day().hours();
     }
 
     return os.str();

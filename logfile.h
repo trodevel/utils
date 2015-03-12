@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1561 $ $Date:: 2015-03-05 #$ $Author: serge $
+// $Revision: 1571 $ $Date:: 2015-03-11 #$ $Author: serge $
 
 #ifndef LIB_UTILS_LOGFILE_H
 #define LIB_UTILS_LOGFILE_H
@@ -49,9 +49,12 @@ private:
 
     void write__( const std::string & s );
 
-    bool is_interval_ended();
-    void switch_to_next();
-    void create_filename_and_open_file();
+    static boost::posix_time::ptime get_now();
+
+    bool is_interval_ended( const boost::posix_time::ptime & now );
+    void switch_to_next( const boost::posix_time::ptime & now );
+    boost::posix_time::ptime rotate_to_time( const boost::posix_time::ptime & now );
+    void create_filename_and_open_file( const boost::posix_time::ptime & current_interval_start );
 
 private:
 
