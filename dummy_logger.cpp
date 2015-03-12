@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1404 $ $Date:: 2015-01-16 #$ $Author: serge $
+// $Revision: 1564 $ $Date:: 2015-03-10 #$ $Author: serge $
 
 
 #include "dummy_logger.h"       // self
@@ -47,12 +47,45 @@ namespace dummy_logger {
 #define DL_UNLOCK(_x)           _x.unlock()
 #endif
 
+class CoutWriter: public IWriter
+{
+public:
+    virtual void write( const std::string & s )
+    {
+        std::cout << s;
+    }
+    virtual IWriter & operator<<( const std::string & s )
+    {
+        std::cout << s;
+        return *this;
+    }
+
+    virtual IWriter & operator<<( const char * s )
+    {
+        std::cout << s;
+        return *this;
+    }
+};
+
+CoutWriter cout_writer;
+
 struct State
 {
     struct Module
     {
         log_levels_log4j    max_log_level;
         std::string         name;
+        IWriter             * writer_;
+
+        Module(
+                log_levels_log4j    max_log_level,
+                std::string         name,
+                IWriter             * writer ):
+                max_log_level( max_log_level ),
+                name( name ),
+                writer_( writer )
+        {
+        }
 
         bool can_log( log_levels_log4j level ) const
         {
@@ -70,6 +103,7 @@ struct State
     void set_log_level( const log_levels_log4j level );
     void set_log_level( unsigned int module_id, const log_levels_log4j level );
     void set_level_output( bool b );
+    void set_writer( IWriter * writer, unsigned int module_id );
 
     const Module & get_module_and_lock( unsigned int module_id ) const;
 
@@ -85,7 +119,11 @@ private:
 
     void output__( const log_levels_log4j level, const char *module_name, const std::string & msg );
 
+    void output__( IWriter & writer, const log_levels_log4j level, const Module & m, const std::string & msg );
+    void output__( IWriter & writer, const log_levels_log4j level, const char *module_name, const std::string & msg );
+
     const Module & get_module__( unsigned int module_id ) const;
+    Module & get_module( unsigned int module_id );
 
     static const std::string & to_string( const log_levels_log4j level );
 
@@ -103,13 +141,16 @@ private:
 
     MapModuleIdToModule         module_map_;
     bool                        must_print_level_;
+
+    IWriter                     * writer_;
 };
 
-const State::Module    State::empty_mod_    = { log_levels_log4j::OFF };
+const State::Module    State::empty_mod_( log_levels_log4j::OFF, "", nullptr );
 const State::Module    & State::empty_mod   = State::empty_mod_;
 
 State::State():
-        must_print_level_( true )
+        must_print_level_( true ),
+        writer_( & cout_writer )
 {
 }
 
@@ -117,9 +158,9 @@ bool State::register_module( unsigned int module_id, const std::string & name, l
 {
     DL_SCOPE_LOCK( mutex_ );
 
-    Module m = { level, name };
+    Module m( level, name, nullptr );
 
-    module_map_[ module_id ] = m;
+    module_map_.insert( MapModuleIdToModule::value_type( module_id, m ) );
 
     return true;
 }
@@ -142,7 +183,7 @@ void State::set_log_level( unsigned int module_id, const log_levels_log4j level 
 {
     DL_SCOPE_LOCK( mutex_ );
 
-    module_map_[ module_id ].max_log_level = level;
+    get_module( module_id ).max_log_level = level;
 }
 
 void State::set_level_output( bool b )
@@ -150,6 +191,18 @@ void State::set_level_output( bool b )
     DL_SCOPE_LOCK( mutex_ );
 
     must_print_level_   = b;
+}
+
+void State::set_writer( IWriter * writer, unsigned int module_id )
+{
+    DL_SCOPE_LOCK( mutex_ );
+
+    if( module_id == 0 )
+        writer_ = writer;
+    else
+    {
+        get_module( module_id ).writer_   = writer;
+    }
 }
 
 const State::Module & State::get_module_and_lock( unsigned int module_id ) const
@@ -211,22 +264,31 @@ void State::log( const log_levels_log4j level, const char *module_name, const st
 
 void State::output__( const log_levels_log4j level, const Module & m, const std::string & msg )
 {
-    if( must_print_level_ )
-        //std::cout << to_string( level ) << " " << m.name << ": " << msg << std::endl;
-        std::cout << to_string( level ) << "|" << m.name << ": " << msg << std::endl;
-    else
-        std::cout << m.name << ": " << msg << std::endl;
+    output__( *writer_, level, m, msg );
+    if( m.writer_ )
+        output__( *m.writer_, level, m, msg );
 }
 
 void State::output__( const log_levels_log4j level, const char *module_name, const std::string & msg )
 {
-    if( must_print_level_ )
-        //std::cout << to_string( level ) << " " << module_name << ": " << msg << std::endl;
-        std::cout << to_string( level ) << "|" << module_name << ": " << msg << std::endl;
-    else
-        std::cout << module_name << ": " << msg << std::endl;
+    output__( *writer_, level, module_name, msg );
 }
 
+void State::output__( IWriter & writer, const log_levels_log4j level, const Module & m, const std::string & msg )
+{
+    if( must_print_level_ )
+        writer << to_string( level ) << "|" << m.name << ": " << msg << "\n";
+    else
+        writer << m.name << ": " << msg << "\n";
+}
+
+void State::output__( IWriter & writer, const log_levels_log4j level, const char *module_name, const std::string & msg )
+{
+    if( must_print_level_ )
+        writer << to_string( level ) << "|" << module_name << ": " << msg << "\n";
+    else
+        writer << module_name << ": " << msg << "\n";
+}
 
 const State::Module & State::get_module__( unsigned int module_id ) const
 {
@@ -234,6 +296,16 @@ const State::Module & State::get_module__( unsigned int module_id ) const
 
     if( it == module_map_.end() )
         return empty_mod;
+
+    return ( *it ).second;
+}
+
+State::Module & State::get_module( unsigned int module_id )
+{
+    MapModuleIdToModule::iterator it = module_map_.find( module_id );
+
+    if( it == module_map_.end() )
+        throw std::runtime_error( ( "cannot find module '" + std::to_string( module_id ) + "'" ).c_str() );
 
     return ( *it ).second;
 }
@@ -329,6 +401,11 @@ void set_log_level( unsigned int module_id, const log_levels_log4j level )
 void set_level_output( bool b )
 {
     state.set_level_output( b );
+}
+
+void set_writer( IWriter * writer, unsigned int module_id )
+{
+    state.set_writer( writer, module_id );
 }
 
 

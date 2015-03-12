@@ -19,10 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1404 $ $Date:: 2015-01-16 #$ $Author: serge $
+// $Revision: 1564 $ $Date:: 2015-03-10 #$ $Author: serge $
 
 #ifndef DUMMY_LOGGER_H
 #define DUMMY_LOGGER_H
+
+#include <string>           // std::string
 
 enum class log_levels_log4j
 {
@@ -48,12 +50,23 @@ void dummy_log_set_log_level( const log_levels_log4j level );
 
 namespace dummy_logger {
 
+class IWriter
+{
+public:
+    virtual ~IWriter() {};
+
+    virtual void write( const std::string & s )             = 0;
+    virtual IWriter & operator<<( const std::string & s )   = 0;
+    virtual IWriter & operator<<( const char * s )          = 0;
+};
+
 void log( const log_levels_log4j level, unsigned int module_id, const char *fmt, ... );
 void log( const log_levels_log4j level, const char *module_name, const char *fmt, ... );
 unsigned int register_module( const char *module_name );
 void set_log_level( const log_levels_log4j level );
 void set_log_level( unsigned int module_id, const log_levels_log4j level );
 void set_level_output( bool b );
+void set_writer( IWriter * writer, unsigned int module_id = 0 );
 
 } // namespace dummy_logger
 
