@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1571 $ $Date:: 2015-03-11 #$ $Author: serge $
+// $Revision: 1657 $ $Date:: 2015-03-29 #$ $Author: serge $
 
 
 #include "logfile.h"      // self
@@ -137,11 +137,12 @@ std::string Logfile::create_interval_filename(
 
     if( mins > 0 )
     {
-        os << "_" << time.time_of_day().hours() << time.time_of_day().minutes();
+        os << "_" << std::setfill( '0' ) << std::setw( 2 ) << time.time_of_day().hours()
+                << std::setfill( '0' ) << std::setw( 2 ) << time.time_of_day().minutes();
     }
     else if( hours > 0 )
     {
-        os << "_" << time.time_of_day().hours();
+        os << "_" << std::setfill( '0' ) << std::setw( 2 ) << time.time_of_day().hours();
     }
 
     return os.str();
