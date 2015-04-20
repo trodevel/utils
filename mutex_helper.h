@@ -9,5 +9,6 @@
 
 #define MUTEX_SCOPE_LOCK(_x)        std::lock_guard<std::mutex> _(_x)
 #define THIS_THREAD_SLEEP_MS(_x)    std::this_thread::sleep_for( std::chrono::milliseconds( _x ) )
+#define THIS_THREAD_SLEEP_SEC(_x)   std::this_thread::sleep_for( std::chrono::seconds( _x ) )
 
 #endif // MUTEX_HELPER_H
