@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1564 $ $Date:: 2015-03-10 #$ $Author: serge $
+// $Revision: 1719 $ $Date:: 2015-04-21 #$ $Author: serge $
 
 
 #include "dummy_logger.h"       // self
@@ -31,8 +31,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include "vformat.h"            // vformat
 
 #ifndef NOTHREAD
-#include <boost/thread.hpp>     // boost::mutex
-#include "wrap_mutex.h"         // SCOPE_LOCK
+#include <mutex>                // std::mutex
+#include "mutex_helper.h"       // MUTEX_SCOPE_LOCK
 #endif
 
 namespace dummy_logger {
@@ -42,7 +42,7 @@ namespace dummy_logger {
 #define DL_LOCK(_x)
 #define DL_UNLOCK(_x)
 #else
-#define DL_SCOPE_LOCK(_x)       SCOPE_LOCK(_x)
+#define DL_SCOPE_LOCK(_x)       MUTEX_SCOPE_LOCK(_x)
 #define DL_LOCK(_x)             _x.lock()
 #define DL_UNLOCK(_x)           _x.unlock()
 #endif
@@ -134,7 +134,7 @@ public:
 private:
 
 #ifndef NOTHREAD
-    mutable boost::mutex        mutex_;
+    mutable std::mutex          mutex_;
 #endif // NOTHREAD
 
     log_levels_log4j            max_log_level_   = log_levels_log4j::INFO;

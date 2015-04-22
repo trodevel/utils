@@ -18,15 +18,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
-// $Revision: 1404 $ $Date:: 2015-01-16 #$ $Author: serge $
+// $Revision: 1715 $ $Date:: 2015-04-21 #$ $Author: serge $
 
 #ifndef UTILS_ASSERT_H
 #define UTILS_ASSERT_H
 
-#include <boost/assert.hpp>     // BOOST_ASSERT
+#include <cassert>      // assert
 
 #ifndef ASSERT
-#define ASSERT(_x)  BOOST_ASSERT(_x)
+#define ASSERT(_x)  assert(_x)
 #endif
 
 #endif // UTILS_ASSERT_H
