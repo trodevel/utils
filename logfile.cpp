@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1657 $ $Date:: 2015-03-29 #$ $Author: serge $
+// $Revision: 1738 $ $Date:: 2015-04-26 #$ $Author: serge $
 
 
 #include "logfile.h"      // self
@@ -68,6 +68,7 @@ void Logfile::write__( const std::string & s )
     }
 
     ofs_ << s;
+    ofs_.flush();
 }
 
 boost::posix_time::ptime Logfile::get_now()
