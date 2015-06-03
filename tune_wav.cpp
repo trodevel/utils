@@ -19,14 +19,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1404 $ $Date:: 2015-01-16 #$ $Author: serge $
+// $Revision: 1812 $ $Date:: 2015-06-03 #$ $Author: serge $
 
 #include "tune_wav.h"       // self
 
 #include <iostream>         // cout
 #include <fstream>          // std::ifstream
 
+#include "dummy_logger.h"   // dummy_log_debug
 #include "types.h"          // uint8
+
+#define MODULENAME "tune_wav"
 
 bool tune_wav( const std::string & filename, const std::string & outp )
 {
@@ -34,7 +37,7 @@ bool tune_wav( const std::string & filename, const std::string & outp )
 
     if( !src.is_open() )
     {
-        std::cout << "ERROR: cannot open input file '" << filename << "'" << std::endl;
+        dummy_log_error( MODULENAME, "cannot open input file '%s'", filename.c_str() );
         return false;
     }
 
@@ -44,17 +47,17 @@ bool tune_wav( const std::string & filename, const std::string & outp )
 
     if( val == 0x12 )
     {
-        std::cout << "DBG: field contains correct value - no transformation is needed" << std::endl;
+        dummy_log_debug( MODULENAME, "field contains correct value - no transformation is needed" );
         return true;
     }
 
-    std::cout << "DBG: patching file '" << filename << "'" << std::endl;
+    dummy_log_debug( MODULENAME, "patching file '%s'", filename.c_str() );
 
     std::ofstream dst( outp.c_str(), std::ios::binary | std::ios::out );
 
     if( !dst.is_open() )
     {
-        std::cout << "ERROR: cannot open temp output file '" << outp << "'" << std::endl;
+        dummy_log_error( MODULENAME, "cannot open temp output file '%s'", outp.c_str() );
         return false;
     }
 
