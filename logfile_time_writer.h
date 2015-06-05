@@ -1,6 +1,6 @@
 /*
 
-Logfile Writer.
+Logfile Writer with Timestamp.
 
 Copyright (C) 2015 Sergey Kolevatov
 
@@ -21,23 +21,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 // $Revision: 1824 $ $Date:: 2015-06-05 #$ $Author: serge $
 
-#ifndef LIB_UTILS_LOGFILE_WRITER_H
-#define LIB_UTILS_LOGFILE_WRITER_H
+#ifndef LIB_UTILS_LOGFILE_TIME_WRITER_H
+#define LIB_UTILS_LOGFILE_TIME_WRITER_H
 
 #include "dummy_logger.h"   // IWriter
 #include "logfile.h"        // Logfile
 
-class LogfileWriter: public dummy_logger::IWriter
+class LogfileTimeWriter: public dummy_logger::IWriter
 {
 public:
-    LogfileWriter( const std::string & filename, uint32 rotation_interval_min );
-    virtual ~LogfileWriter() {};
+    LogfileTimeWriter( const std::string & filename, uint32 rotation_interval_min );
+    virtual ~LogfileTimeWriter() {};
 
     virtual void write( const log_levels_log4j level, const char *module_name, const std::string & msg );
     virtual void write( const char *module_name, const std::string & msg );
 
 private:
+    static const std::string & get_current_timestamp( std::string & s );
+
+private:
     Logfile     logfile_;
 };
 
-#endif // LIB_UTILS_LOGFILE_WRITER_H
+#endif // LIB_UTILS_LOGFILE_TIME_WRITER_H

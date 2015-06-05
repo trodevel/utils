@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1567 $ $Date:: 2015-03-11 #$ $Author: serge $
+// $Revision: 1824 $ $Date:: 2015-06-05 #$ $Author: serge $
 
 #include "logfile_writer.h" // self
 
@@ -28,19 +28,14 @@ LogfileWriter::LogfileWriter( const std::string & filename, uint32 rotation_inte
 {
 }
 
-void LogfileWriter::write( const std::string & s )
+void LogfileWriter::write( const log_levels_log4j level, const char *module_name, const std::string & msg )
 {
-    logfile_.write( s );
+    logfile_ << dummy_logger::to_string( level ) << "|" << module_name << ": " << msg << "\n";
 }
-LogfileWriter::IWriter & LogfileWriter::operator<<( const std::string & s )
-{
-    logfile_ << s;
 
-    return *this;
-}
-LogfileWriter::IWriter & LogfileWriter::operator<<( const char * s )
+void LogfileWriter::write( const char *module_name, const std::string & msg )
 {
-    logfile_ << s;
-
-    return *this;
+    logfile_ << module_name << ": " << msg << "\n";
 }
+
+

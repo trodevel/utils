@@ -19,12 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1571 $ $Date:: 2015-03-11 #$ $Author: serge $
+// $Revision: 1819 $ $Date:: 2015-06-05 #$ $Author: serge $
 
 #ifndef LIB_UTILS_LOGFILE_H
 #define LIB_UTILS_LOGFILE_H
 
-#include <boost/date_time/posix_time/posix_time.hpp>    // boost::posix_time::ptime
+#include <boost/date_time/posix_time/posix_time_types.hpp>    // boost::posix_time::ptime
 #include <fstream>      // std::ofstream
 
 #include "types.h"      // uint32
@@ -55,6 +55,7 @@ private:
     void switch_to_next( const boost::posix_time::ptime & now );
     boost::posix_time::ptime rotate_to_time( const boost::posix_time::ptime & now );
     void create_filename_and_open_file( const boost::posix_time::ptime & current_interval_start );
+    boost::posix_time::time_duration calc_delta( const boost::posix_time::ptime & current_time ) const;
 
 private:
 

@@ -19,20 +19,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1738 $ $Date:: 2015-04-26 #$ $Author: serge $
+// $Revision: 1820 $ $Date:: 2015-06-05 #$ $Author: serge $
 
 
-#include "logfile.h"      // self
+#include "logfile.h"        // self
+
+#include <iomanip>          // std::setfill
 
 Logfile::Logfile( const std::string & filename, uint32 rotation_interval_min ):
     filename_mask_( filename )
 {
     rotation_interval_      = boost::posix_time::minutes( rotation_interval_min );
-    current_interval_end_   = get_now(); // initialize with current time
+    boost::posix_time::ptime current_time   = get_now(); // initialize with current time
 
-    create_filename_and_open_file( current_interval_end_ );
+    create_filename_and_open_file( current_time );
 
-    current_interval_end_   += rotation_interval_;
+    current_interval_end_   = current_time + calc_delta( current_time );
 }
 
 Logfile::~Logfile()
@@ -115,6 +117,37 @@ void Logfile::create_filename_and_open_file( const boost::posix_time::ptime & cu
 
     if( ofs_.fail() )
         throw std::runtime_error( ( "cannot open file '" + current_filename_ + "'" ).c_str() );
+}
+
+boost::posix_time::time_duration Logfile::calc_delta( const boost::posix_time::ptime & current_time ) const
+{
+//    unsigned int ms     = rotation_interval_.fractional_seconds();
+//    unsigned int s      = rotation_interval_.seconds();
+    unsigned int m      = rotation_interval_.minutes();
+    unsigned int h      = rotation_interval_.hours();
+    unsigned int d      = h / 24;
+
+    unsigned int cms    = current_time.time_of_day().fractional_seconds();
+    unsigned int cs     = current_time.time_of_day().seconds();
+    unsigned int cm     = current_time.time_of_day().minutes();
+    unsigned int ch     = current_time.time_of_day().hours();
+
+    boost::posix_time::time_duration delta;
+
+    if( d > 0 )
+    {
+        delta   = boost::posix_time::time_duration( d * 24, 0, 0 ) - boost::posix_time::time_duration( ch, cm, cs, cms );
+    }
+    else if( h > 0 )
+    {
+        delta   = boost::posix_time::time_duration( h, 0, 0 ) - boost::posix_time::time_duration( 0, cm, cs, cms );
+    }
+    else /* if( m > 0 ) */
+    {
+        delta   = boost::posix_time::time_duration( 0, m, 0 ) - boost::posix_time::time_duration( 0, 0, cs, cms );
+    }
+
+    return delta;
 }
 
 

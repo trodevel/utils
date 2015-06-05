@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1719 $ $Date:: 2015-04-21 #$ $Author: serge $
+// $Revision: 1823 $ $Date:: 2015-06-05 #$ $Author: serge $
 
 
 #include "dummy_logger.h"       // self
@@ -50,22 +50,37 @@ namespace dummy_logger {
 class CoutWriter: public IWriter
 {
 public:
-    virtual void write( const std::string & s )
+
+    void write( const log_levels_log4j level, const char *module_name, const std::string & msg )
     {
-        std::cout << s;
-    }
-    virtual IWriter & operator<<( const std::string & s )
-    {
-        std::cout << s;
-        return *this;
+        std::cout << to_string( level ) << "|" << module_name << ": " << msg << "\n";
     }
 
-    virtual IWriter & operator<<( const char * s )
+    void write( const char *module_name, const std::string & msg )
     {
-        std::cout << s;
-        return *this;
+        std::cout << module_name << ": " << msg << "\n";
     }
 };
+
+const std::string & to_string( const log_levels_log4j level )
+{
+    static const std::string names[]   =
+    {
+    "     ",
+    "FATAL",
+    "ERROR",
+    " WARN",
+    " INFO",
+    "DEBUG",
+    "TRACE",
+    };
+
+    if( level < log_levels_log4j::OFF || level > log_levels_log4j::TRACE )
+        return names[0];
+
+    return names[ static_cast<unsigned int>( level ) ];
+}
+
 
 CoutWriter cout_writer;
 
@@ -124,8 +139,6 @@ private:
 
     const Module & get_module__( unsigned int module_id ) const;
     Module & get_module( unsigned int module_id );
-
-    static const std::string & to_string( const log_levels_log4j level );
 
 public:
     static const Module         empty_mod_;
@@ -277,17 +290,17 @@ void State::output__( const log_levels_log4j level, const char *module_name, con
 void State::output__( IWriter & writer, const log_levels_log4j level, const Module & m, const std::string & msg )
 {
     if( must_print_level_ )
-        writer << to_string( level ) << "|" << m.name << ": " << msg << "\n";
+        writer.write( level, m.name.c_str(), msg );
     else
-        writer << m.name << ": " << msg << "\n";
+        writer.write( m.name.c_str(), msg );
 }
 
 void State::output__( IWriter & writer, const log_levels_log4j level, const char *module_name, const std::string & msg )
 {
     if( must_print_level_ )
-        writer << to_string( level ) << "|" << module_name << ": " << msg << "\n";
+        writer.write( level, module_name, msg );
     else
-        writer << module_name << ": " << msg << "\n";
+        writer.write( module_name, msg );
 }
 
 const State::Module & State::get_module__( unsigned int module_id ) const
@@ -308,25 +321,6 @@ State::Module & State::get_module( unsigned int module_id )
         throw std::runtime_error( ( "cannot find module '" + std::to_string( module_id ) + "'" ).c_str() );
 
     return ( *it ).second;
-}
-
-const std::string & State::to_string( const log_levels_log4j level )
-{
-    static const std::string names[]   =
-    {
-    "     ",
-    "FATAL",
-    "ERROR",
-    " WARN",
-    " INFO",
-    "DEBUG",
-    "TRACE",
-    };
-
-    if( level < log_levels_log4j::OFF || level > log_levels_log4j::TRACE )
-        return names[0];
-
-    return names[ static_cast<unsigned int>( level ) ];
 }
 
 // ***********************************************************************************

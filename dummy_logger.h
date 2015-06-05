@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1564 $ $Date:: 2015-03-10 #$ $Author: serge $
+// $Revision: 1823 $ $Date:: 2015-06-05 #$ $Author: serge $
 
 #ifndef DUMMY_LOGGER_H
 #define DUMMY_LOGGER_H
@@ -55,9 +55,8 @@ class IWriter
 public:
     virtual ~IWriter() {};
 
-    virtual void write( const std::string & s )             = 0;
-    virtual IWriter & operator<<( const std::string & s )   = 0;
-    virtual IWriter & operator<<( const char * s )          = 0;
+    virtual void write( const log_levels_log4j level, const char *module_name, const std::string & msg ) = 0;
+    virtual void write( const char *module_name, const std::string & msg ) = 0;
 };
 
 void log( const log_levels_log4j level, unsigned int module_id, const char *fmt, ... );
@@ -67,6 +66,8 @@ void set_log_level( const log_levels_log4j level );
 void set_log_level( unsigned int module_id, const log_levels_log4j level );
 void set_level_output( bool b );
 void set_writer( IWriter * writer, unsigned int module_id = 0 );
+
+const std::string & to_string( const log_levels_log4j level );
 
 } // namespace dummy_logger
 

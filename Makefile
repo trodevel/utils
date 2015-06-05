@@ -80,6 +80,7 @@ EXE=
 
 SRCC = dummy_logger.cpp sprintf.cpp number_format.cpp vformat.cpp gen_random_string.cpp HTTPDownloader.cpp \
 		logfile_writer.cpp \
+		logfile_time_writer.cpp \
 		logfile.cpp \
 		remove_extra_spaces.cpp \
 		tune_wav.cpp
