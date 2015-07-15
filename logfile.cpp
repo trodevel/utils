@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1820 $ $Date:: 2015-06-05 #$ $Author: serge $
+// $Revision: 2115 $ $Date:: 2015-07-13 #$ $Author: serge $
 
 
 #include "logfile.h"        // self
@@ -113,7 +113,7 @@ void Logfile::create_filename_and_open_file( const boost::posix_time::ptime & cu
 {
     current_filename_   = create_interval_filename( filename_mask_, rotation_interval_, current_interval_start );
 
-    ofs_.open( current_filename_.c_str() );
+    ofs_.open( current_filename_.c_str(), std::ios::out | std::ios::app );
 
     if( ofs_.fail() )
         throw std::runtime_error( ( "cannot open file '" + current_filename_ + "'" ).c_str() );
