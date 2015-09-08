@@ -36,7 +36,7 @@ regarding licensing.
 
 */
 
-// $Id: HTTPDownloader.hpp 377 2014-04-16 17:12:30Z serge $
+// $Id: HTTPDownloader.hpp 2518 2015-09-08 21:27:12Z serge $
 
 #ifndef HTTPDOWNLOADER_HPP
 #define HTTPDOWNLOADER_HPP
@@ -56,12 +56,18 @@ public:
      * @param url The URL to download
      * @return The download result
      */
-    std::string download( const std::string& url );
+    std::string download(
+            const std::string   & url,
+            std::string          & error );
 
     /**
      * @return true - ok, false - error
      */
-    bool download_file( const std::string& url, const std::string & file );
+    bool download_file(
+            const std::string   & url,
+            const std::string   & file,
+            std::string         & error,
+            const std::string   & agent = std::string() );
 
 private:
     void* curl;

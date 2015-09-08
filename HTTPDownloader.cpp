@@ -36,7 +36,7 @@ regarding licensing.
 
 */
 
-// $Revision: 1404 $ $Date:: 2015-01-16 #$ $Author: serge $
+// $Revision: 2519 $ $Date:: 2015-09-08 #$ $Author: serge $
 #include "HTTPDownloader.hpp"
 #include <curl/curl.h>
 #include <curl/easy.h>
@@ -71,56 +71,67 @@ HTTPDownloader::~HTTPDownloader()
     curl_easy_cleanup( curl );
 }
 
-string HTTPDownloader::download( const std::string& url )
+string HTTPDownloader::download(
+        const std::string   & url,
+        std::string         & error )
 {
     curl_easy_setopt( curl, CURLOPT_URL, url.c_str() );
-    /* example.com is redirected, so we tell libcurl to follow redirection */
+    // example.com is redirected, so we tell libcurl to follow redirection
     curl_easy_setopt( curl, CURLOPT_FOLLOWLOCATION, 1L );
     curl_easy_setopt( curl, CURLOPT_NOSIGNAL, 1 ); //Prevent "longjmp causes uninitialized stack frame" bug
     curl_easy_setopt( curl, CURLOPT_ACCEPT_ENCODING, "deflate" );
     std::stringstream out;
     curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, write_data );
     curl_easy_setopt( curl, CURLOPT_WRITEDATA, &out );
-    /* Perform the request, res will get the return code */
+    // Perform the request, res will get the return code
     CURLcode res = curl_easy_perform( curl );
-    /* Check for errors */
+    // Check for errors
     if( res != CURLE_OK )
     {
-        fprintf( stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror( res ) );
+        error = "curl_easy_perform() failed: " + std::string( curl_easy_strerror( res ) );
     }
     return out.str();
 }
 
-bool HTTPDownloader::download_file( const std::string& url, const std::string & file )
+bool HTTPDownloader::download_file(
+        const std::string   & url,
+        const std::string   & file,
+        std::string         & error,
+        const std::string   & agent )
 {
     curl_easy_setopt( curl, CURLOPT_URL, url.c_str() );
-    /* example.com is redirected, so we tell libcurl to follow redirection */
+    // example.com is redirected, so we tell libcurl to follow redirection
     curl_easy_setopt( curl, CURLOPT_FOLLOWLOCATION, 1L );
     curl_easy_setopt( curl, CURLOPT_NOSIGNAL, 1 ); //Prevent "longjmp causes uninitialized stack frame" bug
     curl_easy_setopt( curl, CURLOPT_ACCEPT_ENCODING, "deflate" );
+
+    if( agent.empty() == false )
+    {
+        curl_easy_setopt( curl, CURLOPT_USERAGENT, agent.c_str() );
+    }
 
     std::ofstream out( file.c_str() );
 
     curl_easy_setopt( curl, CURLOPT_WRITEFUNCTION, write_data_file );
     curl_easy_setopt( curl, CURLOPT_WRITEDATA, &out );
-    /* Perform the request, res will get the return code */
+    // Perform the request, res will get the return code
     CURLcode res = curl_easy_perform( curl );
-    /* Check for errors */
+    // Check for errors
     if( res != CURLE_OK )
     {
-        fprintf( stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror( res ) );
+        error = "curl_easy_perform() failed: " + std::string( curl_easy_strerror( res ) );
         return false;
     }
 
     if ( out.fail() == true )
     {
-        fprintf( stderr, "download_file() failed: %s\n", "writing to file failed" );
+        error = "download_file() failed: " + std::string( "writing to file failed" );
         return false;
     }
 
     if ( out.tellp() == 0 )
     {
-        fprintf( stderr, "download_file() failed: %s\n", "got not data" );
+        error = "download_file() failed: " + std::string( "got not data" );
         return false;
     }
 
