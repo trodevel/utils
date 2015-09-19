@@ -36,7 +36,7 @@ regarding licensing.
 
 */
 
-// $Id: HTTPDownloader.hpp 2518 2015-09-08 21:27:12Z serge $
+// $Id: HTTPDownloader.hpp 2565 2015-09-16 16:38:18Z serge $
 
 #ifndef HTTPDOWNLOADER_HPP
 #define HTTPDOWNLOADER_HPP

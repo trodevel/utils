@@ -36,7 +36,7 @@ regarding licensing.
 
 */
 
-// $Revision: 2519 $ $Date:: 2015-09-08 #$ $Author: serge $
+// $Revision: 2565 $ $Date:: 2015-09-16 #$ $Author: serge $
 #include "HTTPDownloader.hpp"
 #include <curl/curl.h>
 #include <curl/easy.h>
