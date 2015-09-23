@@ -42,7 +42,7 @@ inline int64_t to_epoch_microsec( const boost::posix_time::ptime & t )
 
 inline boost::posix_time::ptime from_epoch_sec( uint32_t sec )
 {
-    return boost::posix_time::from_time_t( sec / 1000 );
+    return boost::posix_time::from_time_t( sec );
 }
 
 inline boost::posix_time::ptime from_epoch_millisec( uint64_t millis )
