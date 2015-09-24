@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1819 $ $Date:: 2015-06-05 #$ $Author: serge $
+// $Revision: 2628 $ $Date:: 2015-09-24 #$ $Author: serge $
 
 #ifndef LIB_UTILS_LOGFILE_H
 #define LIB_UTILS_LOGFILE_H
@@ -27,12 +27,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include <boost/date_time/posix_time/posix_time_types.hpp>    // boost::posix_time::ptime
 #include <fstream>      // std::ofstream
 
-#include "types.h"      // uint32
+#include <cstdint>      // uint32_t
 
 class Logfile
 {
 public:
-    Logfile( const std::string & filename, uint32 rotation_interval_min );
+    Logfile( const std::string & filename, uint32_t rotation_interval_min );
     ~Logfile();
 
     Logfile& operator <<( const char * s );

@@ -19,14 +19,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 2115 $ $Date:: 2015-07-13 #$ $Author: serge $
+// $Revision: 2627 $ $Date:: 2015-09-24 #$ $Author: serge $
 
 
 #include "logfile.h"        // self
 
 #include <iomanip>          // std::setfill
 
-Logfile::Logfile( const std::string & filename, uint32 rotation_interval_min ):
+Logfile::Logfile( const std::string & filename, uint32_t rotation_interval_min ):
     filename_mask_( filename )
 {
     rotation_interval_      = boost::posix_time::minutes( rotation_interval_min );
@@ -156,8 +156,8 @@ std::string Logfile::create_interval_filename(
     const boost::posix_time::time_duration  & rotation_interval,
     const boost::posix_time::ptime          & time )
 {
-    uint32  mins    = rotation_interval.minutes();
-    uint32  hours   = rotation_interval.hours();
+    uint32_t  mins  = rotation_interval.minutes();
+    uint32_t  hours = rotation_interval.hours();
 
     std::ostringstream os;
 
