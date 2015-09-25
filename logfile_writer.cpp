@@ -19,11 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1824 $ $Date:: 2015-06-05 #$ $Author: serge $
+// $Revision: 2644 $ $Date:: 2015-09-26 #$ $Author: serge $
 
 #include "logfile_writer.h" // self
 
-LogfileWriter::LogfileWriter( const std::string & filename, uint32 rotation_interval_min ):
+LogfileWriter::LogfileWriter( const std::string & filename, uint32_t rotation_interval_min ):
     logfile_( filename, rotation_interval_min )
 {
 }
