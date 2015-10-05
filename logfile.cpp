@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 2627 $ $Date:: 2015-09-24 #$ $Author: serge $
+// $Revision: 2679 $ $Date:: 2015-10-05 #$ $Author: serge $
 
 
 #include "logfile.h"        // self
@@ -29,7 +29,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 Logfile::Logfile( const std::string & filename, uint32_t rotation_interval_min ):
     filename_mask_( filename )
 {
-    rotation_interval_      = boost::posix_time::minutes( rotation_interval_min );
+    rotation_interval_      = boost::posix_time::time_duration( rotation_interval_min / 60, rotation_interval_min % 60, 0 );
     boost::posix_time::ptime current_time   = get_now(); // initialize with current time
 
     create_filename_and_open_file( current_time );
@@ -174,10 +174,12 @@ std::string Logfile::create_interval_filename(
         os << "_" << std::setfill( '0' ) << std::setw( 2 ) << time.time_of_day().hours()
                 << std::setfill( '0' ) << std::setw( 2 ) << time.time_of_day().minutes();
     }
-    else if( hours > 0 )
+    else if( hours > 0 && hours != 24 )
     {
         os << "_" << std::setfill( '0' ) << std::setw( 2 ) << time.time_of_day().hours();
     }
+
+    //os << "_debug_hours_" << hours << "_minutes_" << mins;    // DEBUG
 
     return os.str();
 }
