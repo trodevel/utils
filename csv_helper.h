@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 2696 $ $Date:: 2015-10-07 #$ $Author: serge $
+// $Revision: 2706 $ $Date:: 2015-10-12 #$ $Author: serge $
 
 #ifndef LIB_UTILS_CSV_HELPER_H
 #define LIB_UTILS_CSV_HELPER_H
@@ -39,6 +39,15 @@ public:
         return os.str();
     }
 
+    template< typename ... Args >
+    static std::string to_csv_nl( const Args& ... args )
+    {
+        std::ostringstream os;
+        to_csv_( os, args... );
+        os << std::endl;
+        return os.str();
+    }
+
 protected:
 
     static void to_csv_( std::ostringstream& )
@@ -54,7 +63,7 @@ protected:
     static void to_csv_( std::ostringstream& os, const T1& t1, const Args& ... args )
     {
         os << t1 << ";";
-        to_csv( os, args... );
+        to_csv_( os, args... );
     }
 
 };
