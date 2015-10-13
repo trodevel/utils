@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 2644 $ $Date:: 2015-09-26 #$ $Author: serge $
+// $Revision: 2646 $ $Date:: 2015-09-29 #$ $Author: serge $
 
 #ifndef LIB_UTILS_LOGFILE_WRITER_H
 #define LIB_UTILS_LOGFILE_WRITER_H

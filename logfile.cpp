@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 2679 $ $Date:: 2015-10-05 #$ $Author: serge $
+// $Revision: 2684 $ $Date:: 2015-10-07 #$ $Author: serge $
 
 
 #include "logfile.h"        // self
