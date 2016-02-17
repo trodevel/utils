@@ -19,15 +19,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1812 $ $Date:: 2015-06-03 #$ $Author: serge $
+// $Revision: 3415 $ $Date:: 2016-02-16 #$ $Author: serge $
 
 #include "tune_wav.h"       // self
 
 #include <iostream>         // cout
 #include <fstream>          // std::ifstream
+#include <cstdint>          //
 
 #include "dummy_logger.h"   // dummy_log_debug
-#include "types.h"          // uint8
 
 #define MODULENAME "tune_wav"
 
@@ -43,7 +43,7 @@ bool tune_wav( const std::string & filename, const std::string & outp )
 
     src.seekg( 17 );
 
-    uint8 val = src.get();
+    uint8_t val = src.get();
 
     if( val == 0x12 )
     {
@@ -63,18 +63,18 @@ bool tune_wav( const std::string & filename, const std::string & outp )
 
     src.seekg( 0, std::ios::beg );
 
-    int8 buf[ 256 ];
+    int8_t buf[ 256 ];
 
     // read header (including size field) and write it without size field
-    src.read( buf, 17 );
-    dst.write( buf, 16 );
+    src.read( ( char* ) buf, 17 );
+    dst.write( ( char* ) buf, 16 );
 
     // write new size
     dst.put( 0x12 );
 
     // read and write the rest
-    src.read( buf, 19 );
-    dst.write( buf, 19 );
+    src.read( ( char* ) buf, 19 );
+    dst.write( ( char* ) buf, 19 );
 
     // put 2 extra zero bytes
     dst.put( 0 );

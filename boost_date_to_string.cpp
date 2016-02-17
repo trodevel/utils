@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 2724 $ $Date:: 2015-10-13 #$ $Author: serge $
+// $Revision: 2867 $ $Date:: 2015-11-30 #$ $Author: serge $
 
 #include "boost_date_to_string.h"       // self
 
