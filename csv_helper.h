@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 2867 $ $Date:: 2015-11-30 #$ $Author: serge $
+// $Revision: 4243 $ $Date:: 2016-07-22 #$ $Author: serge $
 
 #ifndef LIB_UTILS_CSV_HELPER_H
 #define LIB_UTILS_CSV_HELPER_H
@@ -30,7 +30,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace utils
 {
 
-class CsvHelper
+template< char _SEP = ';' >
+class CsvHelperT
 {
 public:
 
@@ -51,6 +52,19 @@ public:
         return os.str();
     }
 
+    template<typename _IT>
+    static std::string to_csv( _IT first, _IT last )
+    {
+        std::ostringstream os;
+
+        for( ; first != last; ++first )
+        {
+            os << *first << _SEP;
+        }
+
+        return os.str();
+    }
+
 protected:
 
     static void to_csv_( std::ostringstream& )
@@ -59,17 +73,19 @@ protected:
 
     static void to_csv_( std::ostringstream& os, const std::string& str )
     {
-        os << str << ";";
+        os << str << _SEP;
     }
 
     template< class T1, typename ... Args >
     static void to_csv_( std::ostringstream& os, const T1& t1, const Args& ... args )
     {
-        os << t1 << ";";
+        os << t1 << _SEP;
         to_csv_( os, args... );
     }
 
 };
+
+typedef CsvHelperT<';'> CsvHelper;
 
 } // namespace utils
 
