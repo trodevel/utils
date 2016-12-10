@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1404 $ $Date:: 2015-01-16 #$ $Author: serge $
+// $Revision: 5204 $ $Date:: 2016-12-09 #$ $Author: serge $
 
 #ifndef TOKENIZER_H
 #define TOKENIZER_H
@@ -30,7 +30,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include <string>
 #include <vector>
 
-inline void tokenize_to_vector( std::vector<std::string> & res, const std::string & str, const char * delimeter )
+inline void tokenize_to_vector( std::vector<std::string> & res, const std::string & str, const char * delimeter, bool ignore_empty = false )
 {
     std::string temp;
 
@@ -41,7 +41,7 @@ inline void tokenize_to_vector( std::vector<std::string> & res, const std::strin
         char c = str[i];
         if( c == delimeter[0] )
         {
-            if( !temp.empty() )
+            if( ( ignore_empty == false ) || !temp.empty() )
             {
                 res.push_back( temp );
                 temp.clear();
