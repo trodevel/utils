@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 4243 $ $Date:: 2016-07-22 #$ $Author: serge $
+// $Revision: 5294 $ $Date:: 2016-12-20 #$ $Author: serge $
 
 #ifndef LIB_UTILS_CSV_HELPER_H
 #define LIB_UTILS_CSV_HELPER_H
@@ -30,7 +30,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace utils
 {
 
-template< char _SEP = ';' >
+template< char _SEP = ';', bool LAST_SEP = true >
 class CsvHelperT
 {
 public:
@@ -57,10 +57,18 @@ public:
     {
         std::ostringstream os;
 
-        for( ; first != last; ++first )
+        auto it = first;
+
+        for( ; it != last; ++it )
         {
-            os << *first << _SEP;
+            if( it != first )
+                os << _SEP;
+
+            os << *it;
         }
+
+        if( LAST_SEP )
+            os << _SEP;
 
         return os.str();
     }
