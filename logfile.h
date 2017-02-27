@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 2646 $ $Date:: 2015-09-29 #$ $Author: serge $
+// $Revision: 5850 $ $Date:: 2017-02-27 #$ $Author: serge $
 
 #ifndef LIB_UTILS_LOGFILE_H
 #define LIB_UTILS_LOGFILE_H
@@ -35,6 +35,14 @@ public:
     Logfile( const std::string & filename, uint32_t rotation_interval_min );
     ~Logfile();
 
+    Logfile& operator <<( const char s );
+    Logfile& operator <<( const unsigned char s );
+    Logfile& operator <<( const short s );
+    Logfile& operator <<( const unsigned short s );
+    Logfile& operator <<( const int s );
+    Logfile& operator <<( const unsigned int s );
+    Logfile& operator <<( const long s );
+    Logfile& operator <<( const unsigned long s );
     Logfile& operator <<( const char * s );
     Logfile& operator <<( const std::string & s );
 
@@ -47,7 +55,16 @@ private:
             const boost::posix_time::time_duration  & rotation_interval,
             const boost::posix_time::ptime          & time );
 
-    void write__( const std::string & s );
+    template <class T>
+    void write_type( const T s )
+    {
+        check_interval();
+
+        ofs_ << s;
+        ofs_.flush();
+    }
+
+    void check_interval();
 
     static boost::posix_time::ptime get_now();
 

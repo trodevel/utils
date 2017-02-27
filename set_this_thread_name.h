@@ -1,8 +1,8 @@
 /*
 
-Read config file.
+Set name of current thread.
 
-Copyright (C) 2016 Sergey Kolevatov
+Copyright (C) 2017 Sergey Kolevatov
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,11 +19,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 5151 $ $Date:: 2016-12-05 #$ $Author: serge $
+// $Revision: 5792 $ $Date:: 2017-02-20 #$ $Author: serge $
 
-#include <vector>
-#include <string>
+#ifndef UTILS_SET_THIS_THREAD_NAME_H
+#define UTILS_SET_THIS_THREAD_NAME_H
 
-void read_config_file( const std::string & filename, std::vector<std::string> & lines, const char comment_char = '#' );
+#include <string>   // std::string
 
+namespace utils
+{
 
+void set_this_thread_name( const std::string & name );
+void set_this_thread_name( const char * name );
+
+} // namespace utils
+
+#endif // UTILS_SET_THIS_THREAD_NAME_H

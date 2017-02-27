@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1823 $ $Date:: 2015-06-05 #$ $Author: serge $
+// $Revision: 5850 $ $Date:: 2017-02-27 #$ $Author: serge $
 
 #ifndef DUMMY_LOGGER_H
 #define DUMMY_LOGGER_H
@@ -37,16 +37,19 @@ enum class log_levels_log4j
     TRACE
 };
 
-void dummy_log( const int level, const char *module_name, const char *fmt, ... );
+#define dummy_log_fatal( _mod,  _fmt, ... )     dummy_logger::log( log_levels_log4j::FATAL, _mod, _fmt, ##__VA_ARGS__ )
+#define dummy_log_error( _mod,  _fmt, ... )     dummy_logger::log( log_levels_log4j::ERROR, _mod, _fmt, ##__VA_ARGS__ )
+#define dummy_log_warn( _mod,   _fmt, ... )     dummy_logger::log( log_levels_log4j::WARN,  _mod, _fmt, ##__VA_ARGS__ )
+#define dummy_log_info( _mod,   _fmt, ... )     dummy_logger::log( log_levels_log4j::INFO,  _mod, _fmt, ##__VA_ARGS__ )
+#define dummy_log_debug( _mod,  _fmt, ... )     dummy_logger::log( log_levels_log4j::DEBUG, _mod, _fmt, ##__VA_ARGS__ )
+#define dummy_log_trace( _mod,  _fmt, ... )     dummy_logger::log( log_levels_log4j::TRACE, _mod, _fmt, ##__VA_ARGS__ )
 
-void dummy_log_set_log_level( const log_levels_log4j level );
-
-#define dummy_log_fatal( _mod, _fmt, ... )      dummy_logger::log( log_levels_log4j::FATAL, _mod, _fmt, ##__VA_ARGS__ )
-#define dummy_log_error( _mod, _fmt, ... )      dummy_logger::log( log_levels_log4j::ERROR, _mod, _fmt, ##__VA_ARGS__ )
-#define dummy_log_warn( _mod, _fmt, ... )       dummy_logger::log( log_levels_log4j::WARN,  _mod, _fmt, ##__VA_ARGS__ )
-#define dummy_log_info( _mod, _fmt, ... )       dummy_logger::log( log_levels_log4j::INFO,  _mod, _fmt, ##__VA_ARGS__ )
-#define dummy_log_debug( _mod, _fmt, ... )      dummy_logger::log( log_levels_log4j::DEBUG, _mod, _fmt, ##__VA_ARGS__ )
-#define dummy_log_trace( _mod, _fmt, ... )      dummy_logger::log( log_levels_log4j::TRACE, _mod, _fmt, ##__VA_ARGS__ )
+#define dummy_logi_fatal( _mod, _inst, _fmt, ... )      dummy_logger::log( log_levels_log4j::FATAL, _mod, _inst, _fmt, ##__VA_ARGS__ )
+#define dummy_logi_error( _mod, _inst, _fmt, ... )      dummy_logger::log( log_levels_log4j::ERROR, _mod, _inst, _fmt, ##__VA_ARGS__ )
+#define dummy_logi_warn( _mod,  _inst, _fmt, ... )      dummy_logger::log( log_levels_log4j::WARN,  _mod, _inst, _fmt, ##__VA_ARGS__ )
+#define dummy_logi_info( _mod,  _inst, _fmt, ... )      dummy_logger::log( log_levels_log4j::INFO,  _mod, _inst, _fmt, ##__VA_ARGS__ )
+#define dummy_logi_debug( _mod, _inst, _fmt, ... )      dummy_logger::log( log_levels_log4j::DEBUG, _mod, _inst, _fmt, ##__VA_ARGS__ )
+#define dummy_logi_trace( _mod, _inst, _fmt, ... )      dummy_logger::log( log_levels_log4j::TRACE, _mod, _inst, _fmt, ##__VA_ARGS__ )
 
 namespace dummy_logger {
 
@@ -56,10 +59,13 @@ public:
     virtual ~IWriter() {};
 
     virtual void write( const log_levels_log4j level, const char *module_name, const std::string & msg ) = 0;
+    virtual void write( const log_levels_log4j level, const char *module_name, unsigned int inst_id, const std::string & msg ) = 0;
     virtual void write( const char *module_name, const std::string & msg ) = 0;
+    virtual void write( const char *module_name, unsigned int inst_id, const std::string & msg ) = 0;
 };
 
 void log( const log_levels_log4j level, unsigned int module_id, const char *fmt, ... );
+void log( const log_levels_log4j level, unsigned int module_id, unsigned int inst_id, const char *fmt, ... );
 void log( const log_levels_log4j level, const char *module_name, const char *fmt, ... );
 unsigned int register_module( const char *module_name );
 void set_log_level( const log_levels_log4j level );

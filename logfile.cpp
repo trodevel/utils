@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 2684 $ $Date:: 2015-10-07 #$ $Author: serge $
+// $Revision: 5850 $ $Date:: 2017-02-27 #$ $Author: serge $
 
 
 #include "logfile.h"        // self
@@ -42,25 +42,82 @@ Logfile::~Logfile()
     ofs_.close();
 }
 
+Logfile& Logfile::operator <<( const char s )
+{
+    write_type( s );
+
+    return *this;
+}
+
+Logfile& Logfile::operator <<( const unsigned char s )
+{
+    write_type( s );
+
+    return *this;
+}
+
+Logfile& Logfile::operator <<( const short s )
+{
+    write_type( s );
+
+    return *this;
+}
+
+Logfile& Logfile::operator <<( const unsigned short s )
+{
+    write_type( s );
+
+    return *this;
+}
+
+Logfile& Logfile::operator <<( const int s )
+{
+    write_type( s );
+
+    return *this;
+}
+
+Logfile& Logfile::operator <<( const unsigned int s )
+{
+    write_type( s );
+
+    return *this;
+}
+
+Logfile& Logfile::operator <<( const long s )
+{
+    write_type( s );
+
+    return *this;
+}
+
+Logfile& Logfile::operator <<( const unsigned long s )
+{
+    write_type( s );
+
+    return *this;
+}
+
 Logfile& Logfile::operator <<( const char * s )
 {
-    write__( s );
+    write_type( s );
 
     return *this;
 }
 
 Logfile& Logfile::operator <<( const std::string & s )
 {
-    write__( s );
+    write_type( s );
 
     return *this;
 }
 
 void Logfile::write( const std::string & s )
 {
-    write__( s );
+    write_type( s );
 }
-void Logfile::write__( const std::string & s )
+
+void Logfile::check_interval()
 {
     boost::posix_time::ptime now = get_now();
 
@@ -68,9 +125,6 @@ void Logfile::write__( const std::string & s )
     {
         switch_to_next( now );
     }
-
-    ofs_ << s;
-    ofs_.flush();
 }
 
 boost::posix_time::ptime Logfile::get_now()

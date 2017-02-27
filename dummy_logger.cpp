@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 1823 $ $Date:: 2015-06-05 #$ $Author: serge $
+// $Revision: 5850 $ $Date:: 2017-02-27 #$ $Author: serge $
 
 
 #include "dummy_logger.h"       // self
@@ -56,10 +56,21 @@ public:
         std::cout << to_string( level ) << "|" << module_name << ": " << msg << "\n";
     }
 
+    void write( const log_levels_log4j level, const char *module_name, unsigned int inst_id, const std::string & msg )
+    {
+        std::cout << to_string( level ) << "|" << module_name << "[" << inst_id << "]: " << msg << "\n";
+    }
+
     void write( const char *module_name, const std::string & msg )
     {
         std::cout << module_name << ": " << msg << "\n";
     }
+
+    void write( const char *module_name, unsigned int inst_id, const std::string & msg )
+    {
+        std::cout  << module_name << "[" << inst_id << "]: " << msg << "\n";
+    }
+
 };
 
 const std::string & to_string( const log_levels_log4j level )
@@ -120,22 +131,28 @@ struct State
     void set_level_output( bool b );
     void set_writer( IWriter * writer, unsigned int module_id );
 
-    const Module & get_module_and_lock( unsigned int module_id ) const;
-
-    void unlock() const;
-
-    void log__no_lock( const log_levels_log4j level, const Module & m , const char *fmt, va_list ap );
-
     void log( const log_levels_log4j level, unsigned int module_id, const char *fmt, ... );
-    void log( const log_levels_log4j level, const char *module_name, const std::string & msg );
+    void log( const log_levels_log4j level, unsigned int module_id, const char *fmt, va_list ap );
+    void log( const log_levels_log4j level, unsigned int module_id, unsigned int inst_id, const char *fmt, va_list ap );
+    void log( const log_levels_log4j level, const char *module_name, const char *fmt, ... );
+    void log( const log_levels_log4j level, const char *module_name, const char *fmt, va_list ap );
+
 private:
 
+    bool can_log__( log_levels_log4j level ) const;
+
+    void log_module( const log_levels_log4j level, const Module & m, const char *fmt, va_list ap );
+    void log_module( const log_levels_log4j level, const Module & m, unsigned int inst_id, const char *fmt, va_list ap );
+    void log_module_name( const log_levels_log4j level, const char * module_name, const char *fmt, va_list ap );
+
     void output__( const log_levels_log4j level, const Module & m, const std::string & msg );
+    void output__( const log_levels_log4j level, const Module & m, unsigned int inst_id, const std::string & msg );
 
     void output__( const log_levels_log4j level, const char *module_name, const std::string & msg );
 
-    void output__( IWriter & writer, const log_levels_log4j level, const Module & m, const std::string & msg );
-    void output__( IWriter & writer, const log_levels_log4j level, const char *module_name, const std::string & msg );
+    void output_writer( IWriter & writer, const log_levels_log4j level, const Module & m, const std::string & msg );
+    void output_writer( IWriter & writer, const log_levels_log4j level, const Module & m, unsigned int inst_id, const std::string & msg );
+    void output_writer( IWriter & writer, const log_levels_log4j level, const char *module_name, const std::string & msg );
 
     const Module & get_module__( unsigned int module_id ) const;
     Module & get_module( unsigned int module_id );
@@ -182,6 +199,11 @@ bool State::can_log( log_levels_log4j level ) const
 {
     DL_SCOPE_LOCK( mutex_ );
 
+    return can_log__( level );
+}
+
+bool State::can_log__( log_levels_log4j level ) const
+{
     return level <= max_log_level_;
 }
 
@@ -218,29 +240,7 @@ void State::set_writer( IWriter * writer, unsigned int module_id )
     }
 }
 
-const State::Module & State::get_module_and_lock( unsigned int module_id ) const
-{
-    DL_LOCK( mutex_ );
-
-    MapModuleIdToModule::const_iterator it = module_map_.find( module_id );
-
-    if( it == module_map_.end() )
-    {
-        DL_UNLOCK( mutex_ );
-
-        return empty_mod;
-    }
-
-    return ( *it ).second;
-}
-
-void State::unlock() const
-{
-    DL_UNLOCK( mutex_ );
-}
-
-
-void State::log__no_lock( const log_levels_log4j level, const Module & m , const char *fmt, va_list ap )
+void State::log_module( const log_levels_log4j level, const Module & m , const char *fmt, va_list ap )
 {
     if( m.can_log( level ) == false )
         return;
@@ -250,7 +250,37 @@ void State::log__no_lock( const log_levels_log4j level, const Module & m , const
     output__( level, m, res );
 }
 
+void State::log_module( const log_levels_log4j level, const Module & m, unsigned int inst_id, const char *fmt, va_list ap )
+{
+    if( m.can_log( level ) == false )
+        return;
+
+    std::string res = vformat( fmt, ap );
+
+    output__( level, m, inst_id, res );
+}
+
+void State::log_module_name( const log_levels_log4j level, const char * module_name, const char *fmt, va_list ap )
+{
+    if( can_log__( level ) == false )
+        return;
+
+    std::string res = vformat( fmt, ap );
+
+    output__( level, module_name, res );
+}
+
 void State::log( const log_levels_log4j level, unsigned int module_id, const char *fmt, ... )
+{
+    va_list ap;
+    va_start( ap, fmt );
+
+    log( level, module_id, fmt, ap );
+
+    va_end( ap );
+}
+
+void State::log( const log_levels_log4j level, unsigned int module_id, const char *fmt, va_list ap )
 {
     DL_SCOPE_LOCK( mutex_ );
 
@@ -259,35 +289,60 @@ void State::log( const log_levels_log4j level, unsigned int module_id, const cha
     if( & m == & empty_mod )
         return;
 
+    log_module( level, m, fmt, ap );
+}
+
+void State::log( const log_levels_log4j level, unsigned int module_id, unsigned int inst_id, const char *fmt, va_list ap )
+{
+    DL_SCOPE_LOCK( mutex_ );
+
+    const Module & m = get_module__( module_id );
+
+    if( & m == & empty_mod )
+        return;
+
+    log_module( level, m, inst_id, fmt, ap );
+}
+
+void State::log( const log_levels_log4j level, const char *module_name, const char *fmt, ... )
+{
     va_list ap;
     va_start( ap, fmt );
 
-    log__no_lock( level, m, fmt, ap );
+    log( level, module_name, fmt, ap );
 
     va_end( ap );
 }
 
-void State::log( const log_levels_log4j level, const char *module_name, const std::string & msg )
+void State::log( const log_levels_log4j level, const char *module_name, const char *fmt, va_list ap )
 {
     DL_SCOPE_LOCK( mutex_ );
 
-    output__( level, module_name, msg );
+    log_module_name( level, module_name, fmt, ap );
 }
+
 // private:
 
 void State::output__( const log_levels_log4j level, const Module & m, const std::string & msg )
 {
-    output__( *writer_, level, m, msg );
+    output_writer( *writer_, level, m, msg );
     if( m.writer_ )
-        output__( *m.writer_, level, m, msg );
+        output_writer( *m.writer_, level, m, msg );
+}
+
+void State::output__( const log_levels_log4j level, const Module & m, unsigned int inst_id, const std::string & msg )
+{
+    output_writer( *writer_, level, m, inst_id, msg );
+    if( m.writer_ )
+        output_writer( *m.writer_, level, m, inst_id, msg );
 }
 
 void State::output__( const log_levels_log4j level, const char *module_name, const std::string & msg )
 {
-    output__( *writer_, level, module_name, msg );
+    output_writer( *writer_, level, module_name, msg );
 }
 
-void State::output__( IWriter & writer, const log_levels_log4j level, const Module & m, const std::string & msg )
+void State::output_writer( IWriter & writer, const log_levels_log4j level, const Module & m, const std::string & msg )
 {
     if( must_print_level_ )
         writer.write( level, m.name.c_str(), msg );
@@ -295,7 +350,15 @@ void State::output__( IWriter & writer, const log_levels_log4j level, const Modu
         writer.write( m.name.c_str(), msg );
 }
 
-void State::output__( IWriter & writer, const log_levels_log4j level, const char *module_name, const std::string & msg )
+void State::output_writer( IWriter & writer, const log_levels_log4j level, const Module & m, unsigned int inst_id, const std::string & msg )
+{
+    if( must_print_level_ )
+        writer.write( level, m.name.c_str(), inst_id, msg );
+    else
+        writer.write( m.name.c_str(), inst_id, msg );
+}
+
+void State::output_writer( IWriter & writer, const log_levels_log4j level, const char *module_name, const std::string & msg )
 {
     if( must_print_level_ )
         writer.write( level, module_name, msg );
@@ -329,38 +392,34 @@ State    state;
 
 void log( const log_levels_log4j level, unsigned int module_id, const char *fmt, ... )
 {
-    const State::Module & m = state.get_module_and_lock( module_id );
-
-    if( & m == & State::empty_mod )
-        return;
-
     va_list ap;
     va_start( ap, fmt );
 
-    state.log__no_lock( level, m, fmt, ap );
+    state.log( level, module_id, fmt, ap );
 
     va_end( ap );
+}
 
-    state.unlock();
+void log( const log_levels_log4j level, unsigned int module_id, unsigned int inst_id, const char *fmt, ... )
+{
+    va_list ap;
+    va_start( ap, fmt );
+
+    state.log( level, module_id, inst_id, fmt, ap );
+
+    va_end( ap );
 }
 
 // old version for macro compatibility
 void log( const log_levels_log4j level, const char *module_name, const char *fmt, ... )
 {
-    if( state.can_log( level ) == false )
-        return;
-
-    std::string res;
     va_list ap;
     va_start( ap, fmt );
 
-    res = vformat( fmt, ap );
+    state.log( level, module_name, fmt, ap );
+
     va_end( ap );
-
-    state.log( level, module_name, res );
 }
-
-
 
 unsigned int get_hash( const std::string & module_name )
 {
@@ -402,25 +461,4 @@ void set_writer( IWriter * writer, unsigned int module_id )
     state.set_writer( writer, module_id );
 }
 
-
 } // namespace dummy_logger
-
-void dummy_log( const int level, const char *module_name, const char *fmt, ... )
-{
-    if( dummy_logger::state.can_log( ( log_levels_log4j )level ) == false )
-        return;
-
-    std::string res;
-    va_list ap;
-    va_start( ap, fmt );
-
-    res = vformat( fmt, ap );
-    va_end( ap );
-
-    dummy_logger::state.log( ( log_levels_log4j )level, module_name, res );
-}
-
-void dummy_log_set_log_level( const log_levels_log4j level )
-{
-    dummy_logger::set_log_level( level );
-}

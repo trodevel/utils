@@ -85,6 +85,7 @@ SRCC = boost_date_to_string.cpp \
 		logfile.cpp \
 		read_config_file.cpp \
 		remove_extra_spaces.cpp \
+		set_this_thread_name.cpp \
 		tune_wav.cpp
 OBJS = $(patsubst %.cpp,$(OBJDIR)/%.o,$(SRCC))
 

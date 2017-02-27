@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 2646 $ $Date:: 2015-09-29 #$ $Author: serge $
+// $Revision: 5850 $ $Date:: 2017-02-27 #$ $Author: serge $
 
 #ifndef LIB_UTILS_LOGFILE_TIME_WRITER_H
 #define LIB_UTILS_LOGFILE_TIME_WRITER_H
@@ -34,7 +34,9 @@ public:
     virtual ~LogfileTimeWriter() {};
 
     virtual void write( const log_levels_log4j level, const char *module_name, const std::string & msg );
+    virtual void write( const log_levels_log4j level, const char *module_name, unsigned int inst_id, const std::string & msg );
     virtual void write( const char *module_name, const std::string & msg );
+    virtual void write( const char *module_name, unsigned int inst_id, const std::string & msg );
 
 private:
     static const std::string & get_current_timestamp( std::string & s );

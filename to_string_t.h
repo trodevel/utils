@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 4242 $ $Date:: 2016-07-22 #$ $Author: serge $
+// $Revision: 4273 $ $Date:: 2016-07-28 #$ $Author: serge $
 
 #include <sstream>                  // std::ostringstream
 

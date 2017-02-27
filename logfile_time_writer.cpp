@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 2646 $ $Date:: 2015-09-29 #$ $Author: serge $
+// $Revision: 5850 $ $Date:: 2017-02-27 #$ $Author: serge $
 
 #include "logfile_time_writer.h"    // self
 
@@ -37,11 +37,25 @@ void LogfileTimeWriter::write( const log_levels_log4j level, const char *module_
     logfile_ << get_current_timestamp( s ) << " " << dummy_logger::to_string( level ) << "|" << module_name << ": " << msg << "\n";
 }
 
+void LogfileTimeWriter::write( const log_levels_log4j level, const char *module_name, unsigned int inst_id, const std::string & msg )
+{
+    std::string s;
+
+    logfile_ << get_current_timestamp( s ) << " " << dummy_logger::to_string( level ) << "|" << module_name << "[" << inst_id << "]: " << msg << "\n";
+}
+
 void LogfileTimeWriter::write( const char *module_name, const std::string & msg )
 {
     std::string s;
 
     logfile_ << get_current_timestamp( s ) << " " << module_name << ": " << msg << "\n";
+}
+
+void LogfileTimeWriter::write( const char *module_name, unsigned int inst_id, const std::string & msg )
+{
+    std::string s;
+
+    logfile_ << get_current_timestamp( s ) << " " << module_name << "[" << inst_id << "]: " << msg << "\n";
 }
 
 const std::string & LogfileTimeWriter::get_current_timestamp( std::string & s )

@@ -22,7 +22,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 5204 $ $Date:: 2016-12-09 #$ $Author: serge $
+// $Revision: 5221 $ $Date:: 2016-12-12 #$ $Author: serge $
 
 #ifndef TOKENIZER_H
 #define TOKENIZER_H
