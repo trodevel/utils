@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 5850 $ $Date:: 2017-02-27 #$ $Author: serge $
+// $Revision: 6566 $ $Date:: 2017-04-11 #$ $Author: serge $
 
 
 #include "dummy_logger.h"       // self
@@ -124,6 +124,7 @@ struct State
     State();
 
     bool register_module( unsigned int module_id, const std::string & name, log_levels_log4j level );
+    bool register_module( unsigned int module_id, const std::string & name );
 
     bool can_log( log_levels_log4j level ) const;
     void set_log_level( const log_levels_log4j level );
@@ -189,6 +190,17 @@ bool State::register_module( unsigned int module_id, const std::string & name, l
     DL_SCOPE_LOCK( mutex_ );
 
     Module m( level, name, nullptr );
+
+    module_map_.insert( MapModuleIdToModule::value_type( module_id, m ) );
+
+    return true;
+}
+
+bool State::register_module( unsigned int module_id, const std::string & name )
+{
+    DL_SCOPE_LOCK( mutex_ );
+
+    Module m( max_log_level_, name, nullptr );
 
     module_map_.insert( MapModuleIdToModule::value_type( module_id, m ) );
 
@@ -431,7 +443,7 @@ unsigned int register_module( const std::string & module_name )
 {
     unsigned int hash = get_hash( module_name );
 
-    bool b = state.register_module( hash, module_name, log_levels_log4j::INFO );
+    bool b = state.register_module( hash, module_name );
 
     return b ? hash : 0;
 }
