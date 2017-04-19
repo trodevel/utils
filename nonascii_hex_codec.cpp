@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 6124 $ $Date:: 2017-03-20 #$ $Author: serge $
+// $Revision: 6652 $ $Date:: 2017-04-18 #$ $Author: serge $
 
 #include "nonascii_hex_codec.h"         // self
 
@@ -48,7 +48,7 @@ std::string decode( const std::string & s )
     {
         auto c = s[i];
 
-        if( c == '=' &&  ( i + 3 < size ) )
+        if( c == '=' &&  ( i + 2 < size ) )
         {
             res += boost::algorithm::unhex( s.substr( i + 1, 2 ) );
             i += 2;
