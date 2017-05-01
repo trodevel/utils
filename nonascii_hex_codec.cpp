@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 6652 $ $Date:: 2017-04-18 #$ $Author: serge $
+// $Revision: 6779 $ $Date:: 2017-04-28 #$ $Author: serge $
 
 #include "nonascii_hex_codec.h"         // self
 

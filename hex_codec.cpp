@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 6125 $ $Date:: 2017-03-20 #$ $Author: serge $
+// $Revision: 6192 $ $Date:: 2017-03-22 #$ $Author: serge $
 
 #include "hex_codec.h"                  // self
 

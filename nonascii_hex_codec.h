@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 6124 $ $Date:: 2017-03-20 #$ $Author: serge $
+// $Revision: 6192 $ $Date:: 2017-03-22 #$ $Author: serge $
 
 #ifndef LIB_UTILS_NONASCII_HEX_CODEC_H
 #define LIB_UTILS_NONASCII_HEX_CODEC_H

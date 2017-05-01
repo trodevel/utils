@@ -1,8 +1,8 @@
 /*
 
-HEX codec.
+Rename file and make a backup copy of the target file if it already exists.
 
-Copyright (C) 2015 Sergey Kolevatov
+Copyright (C) 2017 Sergey Kolevatov
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,16 +19,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 6192 $ $Date:: 2017-03-22 #$ $Author: serge $
+// $Revision: 6791 $ $Date:: 2017-04-28 #$ $Author: serge $
+
+#ifndef UTILS_RENAME_AND_BACKUP
+#define UTILS_RENAME_AND_BACKUP
 
 #include <string>
 
 namespace utils
 {
 
-std::string unhex_string( const std::string & s );
-std::string hex_string( const std::string & s );
+bool rename_and_backup( const std::string & old_name, const std::string & new_name );
 
 } // namespace utils
 
-
+#endif // UTILS_RENAME_AND_BACKUP

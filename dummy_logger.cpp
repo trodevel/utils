@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 6566 $ $Date:: 2017-04-11 #$ $Author: serge $
+// $Revision: 6779 $ $Date:: 2017-04-28 #$ $Author: serge $
 
 
 #include "dummy_logger.h"       // self
