@@ -90,7 +90,9 @@ SRCC = boost_date_to_string.cpp \
 		remove_extra_spaces.cpp \
 		rename_and_backup.cpp \
 		set_this_thread_name.cpp \
-		tune_wav.cpp
+		to_value.cpp \
+		tune_wav.cpp \
+
 OBJS = $(patsubst %.cpp,$(OBJDIR)/%.o,$(SRCC))
 
 TYPES_H = types.h
