@@ -87,6 +87,7 @@ SRCC = boost_date_to_string.cpp \
 		logfile.cpp \
 		nonascii_hex_codec.cpp \
 		read_config_file.cpp \
+		regex_match.cpp \
 		remove_extra_spaces.cpp \
 		rename_and_backup.cpp \
 		set_this_thread_name.cpp \
