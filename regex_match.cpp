@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 7694 $ $Date:: 2017-08-22 #$ $Author: serge $
+// $Revision: 7746 $ $Date:: 2017-08-25 #$ $Author: serge $
 
 #include "regex_match.h"                // self
 

@@ -1,8 +1,8 @@
 /*
 
-Wrapper for boost::regex_match()
+Simple string match filter.
 
-Copyright (C) 2016 Sergey Kolevatov
+Copyright (C) 2017 Sergey Kolevatov
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,18 +21,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 // $Revision: 7746 $ $Date:: 2017-08-25 #$ $Author: serge $
 
-#ifndef LIB_UTILS_REGEX_MATCH_H
-#define LIB_UTILS_REGEX_MATCH_H
+#ifndef LIB_UTILS__MATCH_FILTER_H
+#define LIB_UTILS__MATCH_FILTER_H
 
 #include <string>           // std::string
 
 namespace utils
 {
 
-bool regex_match( const std::string & s, const std::string & regex );
-
-bool regex_match_i( const std::string & s, const std::string & regex );
+bool match_filter( const std::string & s, const std::string & filter, bool case_insensitive = false );
 
 } // namespace utils
 
-#endif // LIB_UTILS_REGEX_MATCH_H
+#endif // LIB_UTILS__MATCH_FILTER_H

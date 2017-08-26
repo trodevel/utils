@@ -79,12 +79,15 @@ EXE=
 #vpath %.cpp .
 
 SRCC = boost_date_to_string.cpp \
-		dummy_logger.cpp sprintf.cpp number_format.cpp vformat.cpp gen_random_string.cpp \
+		dummy_logger.cpp \
+		findStringIC.cpp \
+		sprintf.cpp number_format.cpp vformat.cpp gen_random_string.cpp \
 		hex_codec.cpp \
 		HTTPDownloader.cpp \
 		logfile_writer.cpp \
 		logfile_time_writer.cpp \
 		logfile.cpp \
+		match_filter.cpp \
 		nonascii_hex_codec.cpp \
 		read_config_file.cpp \
 		regex_match.cpp \
