@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 6779 $ $Date:: 2017-04-28 #$ $Author: serge $
+// $Revision: 7952 $ $Date:: 2017-10-02 #$ $Author: serge $
 
 #include "nonascii_hex_codec.h"         // self
 
@@ -77,7 +77,11 @@ std::string encode( const std::string & s )
         if( c < 33 || c > 126 || c == '=' )
         {
             res += "=";
-            (void) boost::algorithm::detail::encode_one( c, std::back_inserter( res ));
+#if BOOST_VERSION < 106501
+            (void) boost::algorithm::detail::encode_one( c, std::back_inserter( res ) );
+#else
+            (void) boost::algorithm::detail::encode_one( c, std::back_inserter( res ), "0123456789ABCDEF" );
+#endif
         }
         else
             res += c;

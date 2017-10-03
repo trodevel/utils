@@ -1,19 +1,26 @@
-// $Revision: 7949 $ $Date:: 2017-09-29 #$ $Author: serge $
+// $Revision: 7960 $ $Date:: 2017-10-02 #$ $Author: serge $
 
 #include "boost_timezone.h"     // self
-
-#include <boost/date_time/local_time/local_time.hpp>
 
 namespace utils
 {
 
-boost::posix_time::ptime convert_tz_to_utc( const boost::posix_time::ptime & t, const std::string & timezone )
+TimeZoneConverter::TimeZoneConverter()
 {
-    boost::local_time::tz_database tz_db;
+}
 
-    tz_db.load_from_file( "date_time_zonespec.csv" );
+bool TimeZoneConverter::init( const std::string & filename )
+{
+    tz_db_.load_from_file( filename );
 
-    boost::local_time::time_zone_ptr tz = tz_db.time_zone_from_region( timezone );
+    tz_utc_.reset( new boost::local_time::posix_time_zone( "UTC" ) );
+
+    return true;
+}
+
+boost::posix_time::ptime TimeZoneConverter::local_to_utc( const boost::posix_time::ptime & t, const std::string & timezone )
+{
+    boost::local_time::time_zone_ptr tz = tz_db_.time_zone_from_region( timezone );
 
     boost::local_time::local_date_time tm( t, tz );
 
@@ -22,9 +29,15 @@ boost::posix_time::ptime convert_tz_to_utc( const boost::posix_time::ptime & t, 
     return tm_utc;
 }
 
-boost::posix_time::ptime convert_utc_to_tz( const boost::posix_time::ptime & t, const std::string & timezone )
+boost::posix_time::ptime TimeZoneConverter::utc_to_local( const boost::posix_time::ptime & t, const std::string & timezone )
 {
-    return t;
+    boost::local_time::local_date_time t_utc( t, tz_utc_ );
+
+    boost::local_time::time_zone_ptr tz = tz_db_.time_zone_from_region( timezone );
+
+    auto res = t_utc.local_time_in( tz ).local_time();
+
+    return res;
 }
 
 } // namespace utils
