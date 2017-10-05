@@ -1,4 +1,4 @@
-// $Revision: 7960 $ $Date:: 2017-10-02 #$ $Author: serge $
+// $Revision: 7966 $ $Date:: 2017-10-04 #$ $Author: serge $
 
 #include "boost_timezone.h"     // self
 
@@ -24,9 +24,9 @@ boost::posix_time::ptime TimeZoneConverter::local_to_utc( const boost::posix_tim
 
     boost::local_time::local_date_time tm( t, tz );
 
-    boost::posix_time::ptime tm_utc = tm.utc_time();
+    boost::posix_time::ptime res = tm.utc_time();
 
-    return tm_utc;
+    return res;
 }
 
 boost::posix_time::ptime TimeZoneConverter::utc_to_local( const boost::posix_time::ptime & t, const std::string & timezone )

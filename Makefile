@@ -18,7 +18,15 @@ endif
 ###################################################################
 
 BOOST_INC=$(BOOST_PATH)
-BOOST_LIB=$(BOOST_PATH)/stage/lib
+BOOST_LIB_PATH=$(BOOST_PATH)/stage/lib
+
+BOOST_LIB_NAMES := system date_time
+BOOST_LIBS = $(patsubst %,$(BOOST_LIB_PATH)/libboost_%.a,$(BOOST_LIB_NAMES))
+
+
+###################################################################
+
+EXT_LIBS=$(BOOST_LIBS)
 
 ###################################################################
 
@@ -132,7 +140,7 @@ $(TARGET): $(BINDIR) $(BINDIR)/$(TARGET)
 	@echo "$@ uptodate - ${MODE}"
 
 $(BINDIR)/$(TARGET): $(TYPES_H) $(OBJDIR)/$(TARGET).o $(OBJS) $(BINDIR)/$(STATICLIB)
-	$(CC) $(CFLAGS) $(CDBG) -o $@ $(OBJDIR)/$(TARGET).o $(LFLAGS_TEST)
+	$(CC) $(CFLAGS) $(CDBG) -o $@ $(OBJDIR)/$(TARGET).o $(EXT_LIBS) $(LFLAGS_TEST)
 	
 $(BINDIR):
 	mkdir -p $(OBJDIR)
