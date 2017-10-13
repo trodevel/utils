@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 5294 $ $Date:: 2016-12-20 #$ $Author: serge $
+// $Revision: 8048 $ $Date:: 2017-10-13 #$ $Author: serge $
 
 #ifndef LIB_UTILS_CSV_HELPER_H
 #define LIB_UTILS_CSV_HELPER_H
@@ -36,10 +36,25 @@ class CsvHelperT
 public:
 
     template< typename ... Args >
+    static std::ostream& write( std::ostream& os, const Args& ... args )
+    {
+        write_intern( os, args... );
+        return os;
+    }
+
+    template< typename ... Args >
+    static std::ostream& write_nl( std::ostream& os, const Args& ... args )
+    {
+        write_intern( os, args... );
+        os << std::endl;
+        return os;
+    }
+
+    template< typename ... Args >
     static std::string to_csv( const Args& ... args )
     {
         std::ostringstream os;
-        to_csv_( os, args... );
+        write_intern( os, args... );
         return os.str();
     }
 
@@ -47,7 +62,7 @@ public:
     static std::string to_csv_nl( const Args& ... args )
     {
         std::ostringstream os;
-        to_csv_( os, args... );
+        write_intern( os, args... );
         os << std::endl;
         return os.str();
     }
@@ -75,20 +90,20 @@ public:
 
 protected:
 
-    static void to_csv_( std::ostringstream& )
+    static void write_intern( std::ostream& )
     {
     }
 
-    static void to_csv_( std::ostringstream& os, const std::string& str )
+    static void write_intern( std::ostream& os, const std::string& str )
     {
         os << str << _SEP;
     }
 
     template< class T1, typename ... Args >
-    static void to_csv_( std::ostringstream& os, const T1& t1, const Args& ... args )
+    static void write_intern( std::ostream& os, const T1& t1, const Args& ... args )
     {
         os << t1 << _SEP;
-        to_csv_( os, args... );
+        write_intern( os, args... );
     }
 
 };
