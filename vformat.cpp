@@ -21,11 +21,14 @@ std::string vformat( const char *fmt, va_list ap )
     char stackbuf[1024];
     std::vector<char> dynamicbuf;
     char *buf = &stackbuf[0];
+    va_list ap_copy;
 
     while( true )
     {
         // Try to vsnprintf into our buffer.
-        int needed = vsnprintf( buf, size, fmt, ap );
+        va_copy( ap_copy, ap );
+        int needed = vsnprintf( buf, size, fmt, ap_copy );
+        va_end( ap_copy );
         // NB. C99 (which modern Linux and OS X follow) says vsnprintf
         // failure returns the length it would have needed.  But older
         // glibc and current Windows return -1 for failure, i.e., not
