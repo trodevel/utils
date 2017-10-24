@@ -19,13 +19,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 8048 $ $Date:: 2017-10-13 #$ $Author: serge $
+// $Revision: 8146 $ $Date:: 2017-10-24 #$ $Author: serge $
 
 #ifndef LIB_UTILS_CSV_HELPER_H
 #define LIB_UTILS_CSV_HELPER_H
 
 #include <string>                   // std::string
 #include <sstream>                  // std::ostringstream
+#include <iterator>                 // std::distance
 
 namespace utils
 {
@@ -47,6 +48,40 @@ public:
     {
         write_intern( os, args... );
         os << std::endl;
+        return os;
+    }
+
+    template<bool BREAKLINE = false, typename IT>
+    static std::ostream& write_array( std::ostream& os, IT first, IT last )
+    {
+        return write_user_array( os, first, last, write_elem<typename std::iterator_traits<IT>::value_type> );
+    }
+
+    template<bool BREAKLINE = false, typename IT, class Writer>
+    static std::ostream& write_user_array( std::ostream& os, IT first, IT last, Writer writer )
+    {
+        auto size = std::distance( first, last );
+
+        write_intern( os, size );
+
+        if( BREAKLINE )
+        {
+            os << "\n";
+        }
+
+        auto & it = first;
+
+        for( ; it != last; ++it )
+        {
+            if( it != first )
+                os << _SEP;
+
+            writer( os, *it );
+        }
+
+        if( LAST_SEP )
+            os << _SEP;
+
         return os;
     }
 
@@ -89,6 +124,12 @@ public:
     }
 
 protected:
+
+    template< class T >
+    static void write_elem( std::ostream& os, const T & e )
+    {
+        write_intern( os, e );
+    }
 
     static void write_intern( std::ostream& )
     {
