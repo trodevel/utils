@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 8146 $ $Date:: 2017-10-24 #$ $Author: serge $
+// $Revision: 8199 $ $Date:: 2017-10-26 #$ $Author: serge $
 
 #ifndef LIB_UTILS_CSV_HELPER_H
 #define LIB_UTILS_CSV_HELPER_H
@@ -31,7 +31,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace utils
 {
 
-template< char _SEP = ';', bool LAST_SEP = true >
+template< char SEP = ';' >
 class CsvHelperT
 {
 public:
@@ -73,14 +73,8 @@ public:
 
         for( ; it != last; ++it )
         {
-            if( it != first )
-                os << _SEP;
-
             writer( os, *it );
         }
-
-        if( LAST_SEP )
-            os << _SEP;
 
         return os;
     }
@@ -102,7 +96,7 @@ public:
         return os.str();
     }
 
-    template<typename _IT>
+    template< bool LAST_SEP = true, typename _IT >
     static std::string to_csv( _IT first, _IT last )
     {
         std::ostringstream os;
@@ -112,13 +106,13 @@ public:
         for( ; it != last; ++it )
         {
             if( it != first )
-                os << _SEP;
+                os << SEP;
 
             os << *it;
         }
 
         if( LAST_SEP )
-            os << _SEP;
+            os << SEP;
 
         return os.str();
     }
@@ -137,13 +131,13 @@ protected:
 
     static void write_intern( std::ostream& os, const std::string& str )
     {
-        os << str << _SEP;
+        os << str << SEP;
     }
 
     template< class T1, typename ... Args >
     static void write_intern( std::ostream& os, const T1& t1, const Args& ... args )
     {
-        os << t1 << _SEP;
+        os << t1 << SEP;
         write_intern( os, args... );
     }
 
