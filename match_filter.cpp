@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 7746 $ $Date:: 2017-08-25 #$ $Author: serge $
+// $Revision: 8397 $ $Date:: 2017-11-17 #$ $Author: serge $
 
 #include "match_filter.h"       // self
 
@@ -30,6 +30,9 @@ namespace utils
 
 bool match_filter( const std::string & s, const std::string & filter, bool case_insensitive )
 {
+    if( filter.empty() )
+        return true;
+
     if( case_insensitive )
     {
         return findStringIC( s, filter );
