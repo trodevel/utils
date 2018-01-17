@@ -89,6 +89,7 @@ EXE=
 SRCC = boost_date_to_string.cpp \
 		boost_epoch.cpp \
 		boost_timezone.cpp \
+		chrono_epoch.cpp \
 		dummy_logger.cpp \
 		findStringIC.cpp \
 		sprintf.cpp number_format.cpp vformat.cpp gen_random_string.cpp \
