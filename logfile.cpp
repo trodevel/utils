@@ -19,12 +19,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 5850 $ $Date:: 2017-02-27 #$ $Author: serge $
+// $Revision: 8576 $ $Date:: 2018-01-19 #$ $Author: serge $
 
 
 #include "logfile.h"        // self
 
 #include <iomanip>          // std::setfill
+
+namespace utils
+{
 
 Logfile::Logfile( const std::string & filename, uint32_t rotation_interval_min ):
     filename_mask_( filename )
@@ -237,3 +240,5 @@ std::string Logfile::create_interval_filename(
 
     return os.str();
 }
+
+} // namespace utils

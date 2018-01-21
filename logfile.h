@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 5850 $ $Date:: 2017-02-27 #$ $Author: serge $
+// $Revision: 8576 $ $Date:: 2018-01-19 #$ $Author: serge $
 
 #ifndef LIB_UTILS_LOGFILE_H
 #define LIB_UTILS_LOGFILE_H
@@ -28,6 +28,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include <fstream>      // std::ofstream
 
 #include <cstdint>      // uint32_t
+
+namespace utils
+{
 
 class Logfile
 {
@@ -85,5 +88,6 @@ private:
     std::ofstream               ofs_;
 };
 
+} // namespace utils
 
 #endif // LIB_UTILS_LOGFILE_H

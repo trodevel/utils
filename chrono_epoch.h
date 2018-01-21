@@ -6,7 +6,7 @@ https://stackoverflow.com/questions/31255486/c-how-do-i-convert-a-stdchronotime-
 
 */
 
-// $Revision: 8531 $ $Date:: 2018-01-17 #$ $Author: serge $
+// $Revision: 8542 $ $Date:: 2018-01-18 #$ $Author: serge $
 
 #ifndef LIB_UTILS_CHRONO_EPOCH_H
 #define LIB_UTILS_CHRONO_EPOCH_H

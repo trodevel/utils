@@ -19,11 +19,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 8557 $ $Date:: 2018-01-18 #$ $Author: serge $
+// $Revision: 8576 $ $Date:: 2018-01-19 #$ $Author: serge $
 
 #include "logfile_time.h"       // self
 
 #include <boost/date_time/posix_time/posix_time.hpp>    // boost::posix_time::ptime
+
+namespace utils
+{
 
 LogfileTime::LogfileTime( const std::string & filename, uint32_t rotation_interval_min ):
     logfile_( filename, rotation_interval_min )
@@ -43,3 +46,5 @@ const std::string & LogfileTime::get_current_timestamp( std::string & s )
 
     return s;
 }
+
+} // namespace utils

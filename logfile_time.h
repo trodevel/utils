@@ -19,12 +19,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 8557 $ $Date:: 2018-01-18 #$ $Author: serge $
+// $Revision: 8576 $ $Date:: 2018-01-19 #$ $Author: serge $
 
 #ifndef LIB_UTILS_LOGFILE_TIME_H
 #define LIB_UTILS_LOGFILE_TIME_H
 
 #include "logfile.h"        // Logfile
+
+namespace utils
+{
 
 class LogfileTime
 {
@@ -40,5 +43,7 @@ protected:
 protected:
     Logfile     logfile_;
 };
+
+} // namespace utils
 
 #endif // LIB_UTILS_LOGFILE_TIME_H
