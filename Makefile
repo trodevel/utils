@@ -96,6 +96,7 @@ SRCC = boost_date_to_string.cpp \
 		hex_codec.cpp \
 		HTTPDownloader.cpp \
 		logfile_writer.cpp \
+		logfile_time.cpp \
 		logfile_time_writer.cpp \
 		logfile.cpp \
 		match_filter.cpp \
