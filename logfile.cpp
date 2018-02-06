@@ -19,12 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 8576 $ $Date:: 2018-01-19 #$ $Author: serge $
+// $Revision: 8686 $ $Date:: 2018-02-05 #$ $Author: serge $
 
 
 #include "logfile.h"        // self
 
-#include <iomanip>          // std::setfill
+#include "create_interval_filename.h"       // create_interval_filename()
 
 namespace utils
 {
@@ -213,32 +213,7 @@ std::string Logfile::create_interval_filename(
     const boost::posix_time::time_duration  & rotation_interval,
     const boost::posix_time::ptime          & time )
 {
-    uint32_t  mins  = rotation_interval.minutes();
-    uint32_t  hours = rotation_interval.hours();
-
-    std::ostringstream os;
-
-    boost::gregorian::date date = time.date();
-
-    os << filename_mask << "_";
-
-    os << std::setfill( '0' );
-
-    os << std::setw( 4 ) << date.year() << std::setw( 2 ) << date.month().as_number() << std::setw( 2 ) << date.day();
-
-    if( mins > 0 )
-    {
-        os << "_" << std::setfill( '0' ) << std::setw( 2 ) << time.time_of_day().hours()
-                << std::setfill( '0' ) << std::setw( 2 ) << time.time_of_day().minutes();
-    }
-    else if( hours > 0 && hours != 24 )
-    {
-        os << "_" << std::setfill( '0' ) << std::setw( 2 ) << time.time_of_day().hours();
-    }
-
-    //os << "_debug_hours_" << hours << "_minutes_" << mins;    // DEBUG
-
-    return os.str();
+    return filename_mask + "_" + utils::logfile::create_interval_filename( rotation_interval, time, false );
 }
 
 } // namespace utils
