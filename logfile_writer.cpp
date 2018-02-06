@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 8576 $ $Date:: 2018-01-19 #$ $Author: serge $
+// $Revision: 8692 $ $Date:: 2018-02-06 #$ $Author: serge $
 
 #include "logfile_writer.h" // self
 
@@ -33,22 +33,22 @@ LogfileWriter::LogfileWriter( const std::string & filename, uint32_t rotation_in
 
 void LogfileWriter::write( const log_levels_log4j level, const char *module_name, const std::string & msg )
 {
-    logfile_ << dummy_logger::to_string( level ) << "|" << module_name << ": " << msg << "\n";
+    Logfile::OneLiner( logfile_ ).get() << dummy_logger::to_string( level ) << "|" << module_name << ": " << msg << "\n";
 }
 
 void LogfileWriter::write( const log_levels_log4j level, const char *module_name, unsigned int inst_id, const std::string & msg )
 {
-    logfile_ << dummy_logger::to_string( level ) << "|" << module_name << "[" << inst_id << "]: " << msg << "\n";
+    Logfile::OneLiner( logfile_ ).get() << dummy_logger::to_string( level ) << "|" << module_name << "[" << inst_id << "]: " << msg << "\n";
 }
 
 void LogfileWriter::write( const char *module_name, const std::string & msg )
 {
-    logfile_ << module_name << ": " << msg << "\n";
+    Logfile::OneLiner( logfile_ ).get() << module_name << ": " << msg << "\n";
 }
 
 void LogfileWriter::write( const char *module_name, unsigned int inst_id, const std::string & msg )
 {
-    logfile_ << module_name << "[" << inst_id << "]: " << msg << "\n";
+    Logfile::OneLiner( logfile_ ).get() << module_name << "[" << inst_id << "]: " << msg << "\n";
 }
 
 } // namespace utils

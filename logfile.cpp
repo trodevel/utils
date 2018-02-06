@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 8686 $ $Date:: 2018-02-05 #$ $Author: serge $
+// $Revision: 8696 $ $Date:: 2018-02-06 #$ $Author: serge $
 
 
 #include "logfile.h"        // self
@@ -29,95 +29,45 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace utils
 {
 
+Logfile::Logfile()
+{
+}
+
 Logfile::Logfile( const std::string & filename, uint32_t rotation_interval_min ):
     filename_mask_( filename )
 {
     rotation_interval_      = boost::posix_time::time_duration( rotation_interval_min / 60, rotation_interval_min % 60, 0 );
     boost::posix_time::ptime current_time   = get_now(); // initialize with current time
 
-    create_filename_and_open_file( current_time );
+    create_filename_and_open_file( current_time, true );
 
     current_interval_end_   = current_time + calc_delta( current_time );
 }
 
 Logfile::~Logfile()
 {
-    ofs_.close();
+    if( ofs_.is_open() )
+        ofs_.close();
 }
 
-Logfile& Logfile::operator <<( const char s )
+bool Logfile::init( const std::string & filename, uint32_t rotation_interval_min )
 {
-    write_type( s );
+    filename_mask_          = filename;
 
-    return *this;
-}
+    rotation_interval_      = boost::posix_time::time_duration( rotation_interval_min / 60, rotation_interval_min % 60, 0 );
+    boost::posix_time::ptime current_time   = get_now(); // initialize with current time
 
-Logfile& Logfile::operator <<( const unsigned char s )
-{
-    write_type( s );
+    current_interval_end_   = current_time + calc_delta( current_time );
 
-    return *this;
-}
-
-Logfile& Logfile::operator <<( const short s )
-{
-    write_type( s );
-
-    return *this;
-}
-
-Logfile& Logfile::operator <<( const unsigned short s )
-{
-    write_type( s );
-
-    return *this;
-}
-
-Logfile& Logfile::operator <<( const int s )
-{
-    write_type( s );
-
-    return *this;
-}
-
-Logfile& Logfile::operator <<( const unsigned int s )
-{
-    write_type( s );
-
-    return *this;
-}
-
-Logfile& Logfile::operator <<( const long s )
-{
-    write_type( s );
-
-    return *this;
-}
-
-Logfile& Logfile::operator <<( const unsigned long s )
-{
-    write_type( s );
-
-    return *this;
-}
-
-Logfile& Logfile::operator <<( const char * s )
-{
-    write_type( s );
-
-    return *this;
-}
-
-Logfile& Logfile::operator <<( const std::string & s )
-{
-    write_type( s );
-
-    return *this;
+    return create_filename_and_open_file( current_time, false );
 }
 
 void Logfile::write( const std::string & s )
 {
-    write_type( s );
+    check_interval();
+
+    ofs_ << s;
+    ofs_.flush();
 }
 
 void Logfile::check_interval()
@@ -149,7 +99,7 @@ void Logfile::switch_to_next( const boost::posix_time::ptime & now )
 
     boost::posix_time::ptime interval_start = rotate_to_time( now );
 
-    create_filename_and_open_file( interval_start );
+    create_filename_and_open_file( interval_start, true );
 
     current_interval_end_   = interval_start + rotation_interval_;
 }
@@ -166,14 +116,21 @@ boost::posix_time::ptime Logfile::rotate_to_time( const boost::posix_time::ptime
     return res;
 }
 
-void Logfile::create_filename_and_open_file( const boost::posix_time::ptime & current_interval_start )
+bool Logfile::create_filename_and_open_file( const boost::posix_time::ptime & current_interval_start, bool throw_on_error )
 {
     current_filename_   = create_interval_filename( filename_mask_, rotation_interval_, current_interval_start );
 
     ofs_.open( current_filename_.c_str(), std::ios::out | std::ios::app );
 
     if( ofs_.fail() )
-        throw std::runtime_error( ( "cannot open file '" + current_filename_ + "'" ).c_str() );
+    {
+        if( throw_on_error )
+            throw std::runtime_error( ( "cannot open file '" + current_filename_ + "'" ).c_str() );
+        else
+            return false;
+    }
+
+    return true;
 }
 
 boost::posix_time::time_duration Logfile::calc_delta( const boost::posix_time::ptime & current_time ) const
@@ -207,6 +164,17 @@ boost::posix_time::time_duration Logfile::calc_delta( const boost::posix_time::p
     return delta;
 }
 
+std::ofstream  & Logfile::get_stream_for_oneliner()
+{
+    check_interval();
+
+    return ofs_;
+}
+
+void Logfile::flush()
+{
+    ofs_.flush();
+}
 
 std::string Logfile::create_interval_filename(
     const std::string                       & filename_mask,
@@ -215,5 +183,21 @@ std::string Logfile::create_interval_filename(
 {
     return filename_mask + "_" + utils::logfile::create_interval_filename( rotation_interval, time, false );
 }
+
+Logfile::OneLiner::OneLiner( Logfile & parent ):
+        parent_( parent )
+{
+}
+
+Logfile::OneLiner::~OneLiner()
+{
+    parent_.flush();
+}
+
+std::ofstream & Logfile::OneLiner::get()
+{
+    return parent_.get_stream_for_oneliner();
+}
+
 
 } // namespace utils

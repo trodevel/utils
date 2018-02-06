@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 8576 $ $Date:: 2018-01-19 #$ $Author: serge $
+// $Revision: 8694 $ $Date:: 2018-02-06 #$ $Author: serge $
 
 #ifndef LIB_UTILS_LOGFILE_H
 #define LIB_UTILS_LOGFILE_H
@@ -35,37 +35,44 @@ namespace utils
 class Logfile
 {
 public:
+
+    class OneLiner
+    {
+    public:
+
+        OneLiner( Logfile & parent );
+        ~OneLiner();
+
+        std::ofstream & get();
+
+        void* operator new (std::size_t size) throw (std::bad_alloc) = delete;
+        void* operator new[] (std::size_t size) throw (std::bad_alloc) = delete;
+
+    private:
+
+        Logfile         & parent_;
+    };
+
+    friend OneLiner;
+
+public:
+    Logfile();
     Logfile( const std::string & filename, uint32_t rotation_interval_min );
     ~Logfile();
 
-    Logfile& operator <<( const char s );
-    Logfile& operator <<( const unsigned char s );
-    Logfile& operator <<( const short s );
-    Logfile& operator <<( const unsigned short s );
-    Logfile& operator <<( const int s );
-    Logfile& operator <<( const unsigned int s );
-    Logfile& operator <<( const long s );
-    Logfile& operator <<( const unsigned long s );
-    Logfile& operator <<( const char * s );
-    Logfile& operator <<( const std::string & s );
+    bool init( const std::string & filename, uint32_t rotation_interval_min );
 
     void write( const std::string & s );
 
 private:
 
+    std::ofstream  & get_stream_for_oneliner();
+    void flush();
+
     static std::string create_interval_filename(
             const std::string                       & filename_mask,
             const boost::posix_time::time_duration  & rotation_interval,
             const boost::posix_time::ptime          & time );
-
-    template <class T>
-    void write_type( const T s )
-    {
-        check_interval();
-
-        ofs_ << s;
-        ofs_.flush();
-    }
 
     void check_interval();
 
@@ -74,7 +81,7 @@ private:
     bool is_interval_ended( const boost::posix_time::ptime & now );
     void switch_to_next( const boost::posix_time::ptime & now );
     boost::posix_time::ptime rotate_to_time( const boost::posix_time::ptime & now );
-    void create_filename_and_open_file( const boost::posix_time::ptime & current_interval_start );
+    bool create_filename_and_open_file( const boost::posix_time::ptime & current_interval_start, bool throw_on_error );
     boost::posix_time::time_duration calc_delta( const boost::posix_time::ptime & current_time ) const;
 
 private:

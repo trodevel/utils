@@ -112,8 +112,6 @@ SRCC = boost_date_to_string.cpp \
 
 OBJS = $(patsubst %.cpp,$(OBJDIR)/%.o,$(SRCC))
 
-TYPES_H = types.h
-
 all: static
 
 static: $(TARGET)
@@ -133,16 +131,11 @@ $(OBJDIR)/%.o: %.cpp
 	@echo compiling $<
 	$(CC) $(CFLAGS) $(CDBG) -DPIC -c -o $@ $< $(INCL)
 
-$(TYPES_H):
-	@echo "generating $(TYPES_H)"
-	$(CC) generate_types_h.c -o $(OBJDIR)/generate_types_h
-	$(OBJDIR)/generate_types_h > $(TYPES_H)
-
 $(TARGET): $(BINDIR) $(BINDIR)/$(TARGET)
 	ln -sf $(BINDIR)/$(TARGET) $(TARGET)
 	@echo "$@ uptodate - ${MODE}"
 
-$(BINDIR)/$(TARGET): $(TYPES_H) $(OBJDIR)/$(TARGET).o $(OBJS) $(BINDIR)/$(STATICLIB)
+$(BINDIR)/$(TARGET): $(OBJDIR)/$(TARGET).o $(OBJS) $(BINDIR)/$(STATICLIB)
 	$(CC) $(CFLAGS) $(CDBG) -o $@ $(OBJDIR)/$(TARGET).o $(EXT_LIBS) $(LFLAGS_TEST)
 	
 $(BINDIR):
@@ -152,5 +145,3 @@ $(BINDIR):
 clean:
 	#rm $(OBJDIR)/*.o *~ $(TARGET)
 	- rm $(OBJDIR)/*.o $(TARGET) $(BINDIR)/$(TARGET) $(BINDIR)/$(STATICLIB)
-	- rm $(OBJDIR)/generate_types_h
-	- rm $(TYPES_H)

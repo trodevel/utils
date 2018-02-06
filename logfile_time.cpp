@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 8576 $ $Date:: 2018-01-19 #$ $Author: serge $
+// $Revision: 8691 $ $Date:: 2018-02-06 #$ $Author: serge $
 
 #include "logfile_time.h"       // self
 
@@ -37,7 +37,7 @@ void LogfileTime::write( const std::string & msg )
 {
     std::string s;
 
-    logfile_ << get_current_timestamp( s ) << " " << msg << "\n";
+    Logfile::OneLiner( logfile_ ).get() << get_current_timestamp( s ) << " " << msg << "\n";
 }
 
 const std::string & LogfileTime::get_current_timestamp( std::string & s )
