@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 8694 $ $Date:: 2018-02-06 #$ $Author: serge $
+// $Revision: 8700 $ $Date:: 2018-02-07 #$ $Author: serge $
 
 #ifndef LIB_UTILS_LOGFILE_H
 #define LIB_UTILS_LOGFILE_H
@@ -56,11 +56,8 @@ public:
     friend OneLiner;
 
 public:
-    Logfile();
     Logfile( const std::string & filename, uint32_t rotation_interval_min );
     ~Logfile();
-
-    bool init( const std::string & filename, uint32_t rotation_interval_min );
 
     void write( const std::string & s );
 

@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 8696 $ $Date:: 2018-02-06 #$ $Author: serge $
+// $Revision: 8700 $ $Date:: 2018-02-07 #$ $Author: serge $
 
 
 #include "logfile.h"        // self
@@ -28,10 +28,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace utils
 {
-
-Logfile::Logfile()
-{
-}
 
 Logfile::Logfile( const std::string & filename, uint32_t rotation_interval_min ):
     filename_mask_( filename )
@@ -48,18 +44,6 @@ Logfile::~Logfile()
 {
     if( ofs_.is_open() )
         ofs_.close();
-}
-
-bool Logfile::init( const std::string & filename, uint32_t rotation_interval_min )
-{
-    filename_mask_          = filename;
-
-    rotation_interval_      = boost::posix_time::time_duration( rotation_interval_min / 60, rotation_interval_min % 60, 0 );
-    boost::posix_time::ptime current_time   = get_now(); // initialize with current time
-
-    current_interval_end_   = current_time + calc_delta( current_time );
-
-    return create_filename_and_open_file( current_time, false );
 }
 
 void Logfile::write( const std::string & s )
