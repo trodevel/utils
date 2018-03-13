@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 5151 $ $Date:: 2016-12-05 #$ $Author: serge $
+// $Revision: 8743 $ $Date:: 2018-03-12 #$ $Author: serge $
 
 #include "read_config_file.h"       // self
 
@@ -28,14 +28,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 #include "trim.h"                   // trim
 
-void read_config_file( const std::string & filename, std::vector<std::string> & lines, const char comment_char )
+namespace utils
+{
+
+bool read_config_file( const std::string & filename, std::vector<std::string> & lines, const char comment_char, bool throw_on_error )
 {
     std::ifstream inp( filename.c_str() );
     std::string line;
 
     if( inp.is_open() == false )
     {
-        throw std::runtime_error( "read_config_file: cannot open '" + filename + "'" );
+        if( throw_on_error )
+            throw std::runtime_error( "read_config_file: cannot open '" + filename + "'" );
+
+        return false;
     }
 
     while( inp.good() )
@@ -54,6 +60,8 @@ void read_config_file( const std::string & filename, std::vector<std::string> & 
     }
 
     inp.close();
+
+    return true;
 }
 
-
+} // namespace utils

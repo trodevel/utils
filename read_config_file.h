@@ -19,11 +19,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 5151 $ $Date:: 2016-12-05 #$ $Author: serge $
+// $Revision: 8743 $ $Date:: 2018-03-12 #$ $Author: serge $
 
 #include <vector>
 #include <string>
 
-void read_config_file( const std::string & filename, std::vector<std::string> & lines, const char comment_char = '#' );
+#ifndef LIB_UTILS__READ_CONFIG_FILE_H
+#define LIB_UTILS__READ_CONFIG_FILE_H
 
+namespace utils
+{
 
+bool read_config_file(
+        const std::string           & filename,
+        std::vector<std::string>    & lines,
+        const char                  comment_char = '#',
+        bool                        throw_on_error = true );
+
+}
+
+#endif // LIB_UTILS__READ_CONFIG_FILE_H
