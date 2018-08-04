@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 8743 $ $Date:: 2018-03-12 #$ $Author: serge $
+// $Revision: 8843 $ $Date:: 2018-03-28 #$ $Author: serge $
 
 #include "read_config_file.h"       // self
 

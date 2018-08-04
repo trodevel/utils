@@ -106,6 +106,7 @@ SRCC = boost_date_to_string.cpp \
 		regex_match.cpp \
 		remove_extra_spaces.cpp \
 		rename_and_backup.cpp \
+		request_id_gen.cpp \
 		set_this_thread_name.cpp \
 		to_value.cpp \
 		tune_wav.cpp \

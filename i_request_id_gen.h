@@ -1,8 +1,8 @@
 /*
 
-Read config file.
+Request ID generator interface.
 
-Copyright (C) 2016 Sergey Kolevatov
+Copyright (C) 2018 Sergey Kolevatov
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,23 +19,24 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 8843 $ $Date:: 2018-03-28 #$ $Author: serge $
+// $Revision: 9588 $ $Date:: 2018-08-03 #$ $Author: serge $
 
-#include <vector>
-#include <string>
+#ifndef UTILS__I_REQUEST_ID_GEN_H
+#define UTILS__I_REQUEST_ID_GEN_H
 
-#ifndef LIB_UTILS__READ_CONFIG_FILE_H
-#define LIB_UTILS__READ_CONFIG_FILE_H
+#include <cstdint>      // uint32_t
 
-namespace utils
+namespace utils {
+
+class IRequestIdGen
 {
+public:
 
-bool read_config_file(
-        const std::string           & filename,
-        std::vector<std::string>    & lines,
-        const char                  comment_char = '#',
-        bool                        throw_on_error = true );
+    virtual ~IRequestIdGen() {};
 
-}
+    virtual uint32_t get_next_request_id()  = 0;
+};
 
-#endif // LIB_UTILS__READ_CONFIG_FILE_H
+} // namespace utils
+
+#endif // UTILS__I_REQUEST_ID_GEN_H

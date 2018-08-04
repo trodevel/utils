@@ -1,8 +1,8 @@
 /*
 
-Read config file.
+Request ID generator.
 
-Copyright (C) 2016 Sergey Kolevatov
+Copyright (C) 2018 Sergey Kolevatov
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,23 +19,30 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 8843 $ $Date:: 2018-03-28 #$ $Author: serge $
+// $Revision: 9588 $ $Date:: 2018-08-03 #$ $Author: serge $
 
-#include <vector>
-#include <string>
+#include "request_id_gen.h"     // self
 
-#ifndef LIB_UTILS__READ_CONFIG_FILE_H
-#define LIB_UTILS__READ_CONFIG_FILE_H
+namespace utils {
 
-namespace utils
+RequestIdGen::RequestIdGen():
+    last_id_( 0 ),
+    first_( 1 ),
+    step_( 1 )
 {
-
-bool read_config_file(
-        const std::string           & filename,
-        std::vector<std::string>    & lines,
-        const char                  comment_char = '#',
-        bool                        throw_on_error = true );
-
 }
 
-#endif // LIB_UTILS__READ_CONFIG_FILE_H
+void RequestIdGen::init( uint32_t first, uint32_t step )
+{
+    first_      = first;
+    step_       = step;
+}
+
+uint32_t RequestIdGen::get_next_request_id()
+{
+    auto    res = last_id_++;
+
+    return first_ + ( res * step_ );
+}
+
+} // namespace utils

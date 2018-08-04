@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 8684 $ $Date:: 2018-02-05 #$ $Author: serge $
+// $Revision: 8710 $ $Date:: 2018-02-09 #$ $Author: serge $
 
 
 #include "create_interval_filename.h"   // self

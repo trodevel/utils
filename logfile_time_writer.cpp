@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 8692 $ $Date:: 2018-02-06 #$ $Author: serge $
+// $Revision: 8710 $ $Date:: 2018-02-09 #$ $Author: serge $
 
 #include "logfile_time_writer.h"    // self
 
