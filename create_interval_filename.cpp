@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 8710 $ $Date:: 2018-02-09 #$ $Author: serge $
+// $Revision: 9932 $ $Date:: 2018-10-25 #$ $Author: serge $
 
 
 #include "create_interval_filename.h"   // self
@@ -42,6 +42,56 @@ const std::string & make_dash(
     return need_dash ? dash : nodash;
 }
 
+std::ostream & write_year(
+        std::ostream                    & os,
+        const boost::gregorian::date    & date )
+{
+    os << std::setfill( '0' ) << std::setw( 4 ) << date.year();
+    return os;
+}
+
+std::ostream & write_month(
+        std::ostream                    & os,
+        const boost::gregorian::date    & date )
+{
+    os << std::setfill( '0' ) << std::setw( 2 ) << date.month().as_number();
+    return os;
+}
+
+std::ostream & write_week(
+        std::ostream                    & os,
+        const boost::gregorian::date    & date )
+{
+    os << "_wk_" << std::setfill( '0' ) << std::setw( 2 ) << date.week_number();
+    return os;
+}
+
+std::ostream & write_day(
+        std::ostream                    & os,
+        const boost::gregorian::date    & date )
+{
+    os << std::setfill( '0' ) << std::setw( 2 ) << date.day();
+
+    return os;
+}
+
+std::ostream & write_hours(
+        std::ostream                    & os,
+        const boost::posix_time::ptime  & time )
+{
+    os << std::setfill( '0' ) << std::setw( 2 ) << time.time_of_day().hours();
+
+    return os;
+}
+
+std::ostream & write_minutes(
+        std::ostream                    & os,
+        const boost::posix_time::ptime  & time )
+{
+    os << std::setfill( '0' ) << std::setw( 2 ) << time.time_of_day().minutes();
+
+    return os;
+}
 
 std::string create_interval_filename(
     const boost::posix_time::time_duration  & rotation_interval,
@@ -53,22 +103,66 @@ std::string create_interval_filename(
     uint32_t  mins  = rotation_interval.minutes();
     uint32_t  hours = rotation_interval.hours();
 
+    uint32_t  days      = 0;
+    uint32_t  weeks     = 0;
+    uint32_t  months    = 0;
+
+    if( hours > 0 && ( ( hours % 24 ) == 0 ) )
+    {
+        days    = hours / 24;
+        hours   = 0;
+    }
+
+    if( days > 0 && ( ( days % 7 ) == 0 ) )
+    {
+        weeks   = days / 7;
+        days    = 0;
+    }
+
+    if( days > 0 && ( ( days % 30 ) == 0 ) )
+    {
+        months  = days / 30;
+        days    = 0;
+    }
+
     std::ostringstream os;
 
     boost::gregorian::date date = time.date();
 
-    os << std::setfill( '0' );
-
-    os << std::setw( 4 ) << date.year() << sep << std::setw( 2 ) << date.month().as_number() << sep << std::setw( 2 ) << date.day();
+    write_year( os, date );
 
     if( mins > 0 )
     {
-        os << "_" << std::setfill( '0' ) << std::setw( 2 ) << time.time_of_day().hours()
-                << std::setfill( '0' ) << std::setw( 2 ) << time.time_of_day().minutes();
+        os << sep;
+        write_month( os, date );
+        os << sep;
+        write_day( os, date ) << "_";
+        write_hours( os, time );
+        write_minutes( os, time );
     }
-    else if( hours > 0 && hours != 24 )
+    else if( hours > 0 )
     {
-        os << "_" << std::setfill( '0' ) << std::setw( 2 ) << time.time_of_day().hours();
+        os << sep;
+        write_month( os, date );
+        os << sep;
+        write_day( os, date ) << "_";
+        write_hours( os, time );
+    }
+    else if( days > 0 )
+    {
+        os << sep;
+        write_month( os, date );
+        os << sep;
+        write_day( os, date );
+    }
+    else if( weeks > 0 )
+    {
+        write_week( os, date );
+    }
+    else if( months > 0 )
+    {
+        os << sep;
+        write_month( os, date );
     }
 
     //os << "_debug_hours_" << hours << "_minutes_" << mins;    // DEBUG
