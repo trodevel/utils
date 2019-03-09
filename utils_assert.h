@@ -18,7 +18,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
-// $Revision: 1715 $ $Date:: 2015-04-21 #$ $Author: serge $
+// $Revision: 10595 $ $Date:: 2019-03-08 #$ $Author: serge $
 
 #ifndef UTILS_ASSERT_H
 #define UTILS_ASSERT_H
