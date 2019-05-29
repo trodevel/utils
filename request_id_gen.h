@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 9648 $ $Date:: 2018-08-09 #$ $Author: serge $
+// $Revision: 11663 $ $Date:: 2019-05-29 #$ $Author: serge $
 
 #ifndef UTILS__REQUEST_ID_GEN_H
 #define UTILS__REQUEST_ID_GEN_H
@@ -38,7 +38,9 @@ public:
 
     void init( uint32_t first, uint32_t step );
 
-    virtual uint32_t get_next_request_id();
+    virtual uint32_t get_next_request_id() override;
+
+    uint32_t get_last_request_id() const;
 
 private:
 
