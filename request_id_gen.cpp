@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 11663 $ $Date:: 2019-05-29 #$ $Author: serge $
+// $Revision: 11688 $ $Date:: 2019-05-30 #$ $Author: serge $
 
 #include "request_id_gen.h"     // self
 
@@ -27,22 +27,23 @@ namespace utils {
 
 RequestIdGen::RequestIdGen():
     last_id_( 0 ),
-    first_( 1 ),
     step_( 1 )
 {
 }
 
 void RequestIdGen::init( uint32_t first, uint32_t step )
 {
-    first_      = first;
+    last_id_    = first;
     step_       = step;
 }
 
 uint32_t RequestIdGen::get_next_request_id()
 {
-    auto    res = last_id_++;
+    last_id_ += step_;
 
-    return first_ + ( res * step_ );
+    uint32_t    res = last_id_;
+
+    return res;
 }
 
 uint32_t RequestIdGen::get_last_request_id() const

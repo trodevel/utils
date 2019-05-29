@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 11663 $ $Date:: 2019-05-29 #$ $Author: serge $
+// $Revision: 11688 $ $Date:: 2019-05-30 #$ $Author: serge $
 
 #ifndef UTILS__REQUEST_ID_GEN_H
 #define UTILS__REQUEST_ID_GEN_H
@@ -46,7 +46,6 @@ private:
 
     std::atomic<uint32_t>   last_id_;
 
-    uint32_t                first_;
     uint32_t                step_;
 };
 
