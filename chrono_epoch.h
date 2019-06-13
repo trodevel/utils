@@ -6,20 +6,20 @@ https://stackoverflow.com/questions/31255486/c-how-do-i-convert-a-stdchronotime-
 
 */
 
-// $Revision: 8542 $ $Date:: 2018-01-18 #$ $Author: serge $
+// $Revision: 11731 $ $Date:: 2019-06-13 #$ $Author: serge $
 
 #ifndef LIB_UTILS_CHRONO_EPOCH_H
 #define LIB_UTILS_CHRONO_EPOCH_H
 
 #include <chrono>       // std::chrono
-#include <cstdint>      // uint32_t, uint64_t
+#include "epoch32_t.h"  // epoch32_t
 
 namespace utils
 {
 
-uint32_t to_epoch( const std::chrono::system_clock::time_point & tp );
+epoch32_t to_epoch( const std::chrono::system_clock::time_point & tp );
 
-uint64_t to_epoch_microsec( const std::chrono::system_clock::time_point & tp );
+epoch64_t to_epoch_microsec( const std::chrono::system_clock::time_point & tp );
 
 } // namespace utils
 

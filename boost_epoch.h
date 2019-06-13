@@ -14,18 +14,18 @@ author: http://stackoverflow.com/users/277176/ybungalobill
 
 #include <boost/date_time/posix_time/posix_time.hpp>    // boost::posix_time::ptime
 
-#include <cstdint>                      // uint32_t, int64_t
+#include "epoch32_t.h"              // epoch32_t
 
 namespace utils
 {
 
-uint32_t to_epoch( const boost::posix_time::ptime & t );
+epoch32_t to_epoch( const boost::posix_time::ptime & t );
 
 int64_t to_epoch_microsec( const boost::posix_time::ptime & t );
 
-boost::posix_time::ptime from_epoch_sec( uint32_t sec );
+boost::posix_time::ptime from_epoch_sec( epoch32_t sec );
 
-boost::posix_time::ptime from_epoch_millisec( uint64_t millis );
+boost::posix_time::ptime from_epoch_millisec( epoch64_t millis );
 
 } // namespace utils
 

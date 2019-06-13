@@ -1,8 +1,8 @@
 /*
 
-Request ID generator.
+Get now epoch.
 
-Copyright (C) 2018 Sergey Kolevatov
+Copyright (C) 2019 Sergey Kolevatov
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,36 +19,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 11719 $ $Date:: 2019-06-06 #$ $Author: serge $
+// $Revision: 11733 $ $Date:: 2019-06-13 #$ $Author: serge $
 
-#include "request_id_gen.h"     // self
+#ifndef LIB_UTILS__GET_NOW_EPOCH_H
+#define LIB_UTILS__GET_NOW_EPOCH_H
 
-namespace utils {
+#include "epoch32_t.h"  // epoch32_t
 
-RequestIdGen::RequestIdGen():
-    last_id_( 0 ),
-    step_( 1 )
+namespace utils
 {
-}
 
-void RequestIdGen::init( uint32_t first, uint32_t step )
-{
-    last_id_    = first;
-    step_       = step;
-}
+epoch32_t get_now_epoch();
 
-uint32_t RequestIdGen::get_next_request_id()
-{
-    last_id_ += step_;
-
-    uint32_t    res = last_id_;
-
-    return res;
-}
-
-uint32_t RequestIdGen::get_last_request_id() const
-{
-    return last_id_;
-}
+epoch64_t get_now_epoch_microsec();
 
 } // namespace utils
+
+#endif // LIB_UTILS__GET_NOW_EPOCH_H

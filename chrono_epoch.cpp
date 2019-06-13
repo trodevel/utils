@@ -6,14 +6,14 @@ https://stackoverflow.com/questions/31255486/c-how-do-i-convert-a-stdchronotime-
 
 */
 
-// $Revision: 8542 $ $Date:: 2018-01-18 #$ $Author: serge $
+// $Revision: 11731 $ $Date:: 2019-06-13 #$ $Author: serge $
 
 #include "chrono_epoch.h"       // self
 
 namespace utils
 {
 
-uint32_t to_epoch( const std::chrono::system_clock::time_point & tp )
+epoch32_t to_epoch( const std::chrono::system_clock::time_point & tp )
 {
     auto tp_casted = std::chrono::time_point_cast<std::chrono::seconds>( tp );
 
@@ -21,12 +21,12 @@ uint32_t to_epoch( const std::chrono::system_clock::time_point & tp )
 
     auto value = std::chrono::duration_cast<std::chrono::seconds>( epoch );
 
-    uint32_t duration = value.count();
+    epoch32_t duration = value.count();
 
     return duration;
 }
 
-uint64_t to_epoch_microsec( const std::chrono::system_clock::time_point & tp )
+epoch64_t to_epoch_microsec( const std::chrono::system_clock::time_point & tp )
 {
     auto tp_casted = std::chrono::time_point_cast<std::chrono::microseconds>( tp );
 
@@ -34,7 +34,7 @@ uint64_t to_epoch_microsec( const std::chrono::system_clock::time_point & tp )
 
     auto value = std::chrono::duration_cast<std::chrono::microseconds>( epoch );
 
-    uint64_t duration = value.count();
+    epoch64_t duration = value.count();
 
     return duration;
 }

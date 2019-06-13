@@ -18,7 +18,7 @@ author: http://stackoverflow.com/users/277176/ybungalobill
 namespace utils
 {
 
-uint32_t to_epoch( const boost::posix_time::ptime & t )
+epoch32_t to_epoch( const boost::posix_time::ptime & t )
 {
     static const boost::posix_time::ptime epoch( boost::gregorian::date( 1970, 1, 1 ) );
 
@@ -39,12 +39,12 @@ int64_t to_epoch_microsec( const boost::posix_time::ptime & t )
     return x;
 }
 
-boost::posix_time::ptime from_epoch_sec( uint32_t sec )
+boost::posix_time::ptime from_epoch_sec( epoch32_t sec )
 {
     return boost::posix_time::from_time_t( sec );
 }
 
-boost::posix_time::ptime from_epoch_millisec( uint64_t millis )
+boost::posix_time::ptime from_epoch_millisec( epoch64_t millis )
 {
     return boost::posix_time::from_time_t( millis / 1000 ) + boost::posix_time::millisec( millis % 1000 );
 }

@@ -1,8 +1,8 @@
 /*
 
-Request ID generator.
+Get now epoch.
 
-Copyright (C) 2018 Sergey Kolevatov
+Copyright (C) 2019 Sergey Kolevatov
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -19,36 +19,25 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 11719 $ $Date:: 2019-06-06 #$ $Author: serge $
+// $Revision: 11734 $ $Date:: 2019-06-13 #$ $Author: serge $
 
-#include "request_id_gen.h"     // self
+#include "get_now_epoch.h"      // self
 
-namespace utils {
+#include <chrono>           // std::chrono
 
-RequestIdGen::RequestIdGen():
-    last_id_( 0 ),
-    step_( 1 )
+#include "chrono_epoch.h"   // to_epoch()
+
+namespace utils
 {
+
+epoch32_t get_now_epoch()
+{
+    return to_epoch( std::chrono::system_clock::now() );
 }
 
-void RequestIdGen::init( uint32_t first, uint32_t step )
+epoch64_t get_now_epoch_microsec()
 {
-    last_id_    = first;
-    step_       = step;
-}
-
-uint32_t RequestIdGen::get_next_request_id()
-{
-    last_id_ += step_;
-
-    uint32_t    res = last_id_;
-
-    return res;
-}
-
-uint32_t RequestIdGen::get_last_request_id() const
-{
-    return last_id_;
+    return to_epoch_microsec( std::chrono::system_clock::now() );
 }
 
 } // namespace utils
