@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 5850 $ $Date:: 2017-02-27 #$ $Author: serge $
+// $Revision: 12036 $ $Date:: 2019-09-25 #$ $Author: serge $
 
 #ifndef DUMMY_LOGGER_H
 #define DUMMY_LOGGER_H
@@ -33,7 +33,7 @@ enum class log_levels_log4j
     ERROR,
     WARN,
     INFO,
-    DEBUG,
+    Debug,
     TRACE
 };
 
@@ -41,14 +41,14 @@ enum class log_levels_log4j
 #define dummy_log_error( _mod,  _fmt, ... )     dummy_logger::log( log_levels_log4j::ERROR, _mod, _fmt, ##__VA_ARGS__ )
 #define dummy_log_warn( _mod,   _fmt, ... )     dummy_logger::log( log_levels_log4j::WARN,  _mod, _fmt, ##__VA_ARGS__ )
 #define dummy_log_info( _mod,   _fmt, ... )     dummy_logger::log( log_levels_log4j::INFO,  _mod, _fmt, ##__VA_ARGS__ )
-#define dummy_log_debug( _mod,  _fmt, ... )     dummy_logger::log( log_levels_log4j::DEBUG, _mod, _fmt, ##__VA_ARGS__ )
+#define dummy_log_debug( _mod,  _fmt, ... )     dummy_logger::log( log_levels_log4j::Debug, _mod, _fmt, ##__VA_ARGS__ )
 #define dummy_log_trace( _mod,  _fmt, ... )     dummy_logger::log( log_levels_log4j::TRACE, _mod, _fmt, ##__VA_ARGS__ )
 
 #define dummy_logi_fatal( _mod, _inst, _fmt, ... )      dummy_logger::log( log_levels_log4j::FATAL, _mod, _inst, _fmt, ##__VA_ARGS__ )
 #define dummy_logi_error( _mod, _inst, _fmt, ... )      dummy_logger::log( log_levels_log4j::ERROR, _mod, _inst, _fmt, ##__VA_ARGS__ )
 #define dummy_logi_warn( _mod,  _inst, _fmt, ... )      dummy_logger::log( log_levels_log4j::WARN,  _mod, _inst, _fmt, ##__VA_ARGS__ )
 #define dummy_logi_info( _mod,  _inst, _fmt, ... )      dummy_logger::log( log_levels_log4j::INFO,  _mod, _inst, _fmt, ##__VA_ARGS__ )
-#define dummy_logi_debug( _mod, _inst, _fmt, ... )      dummy_logger::log( log_levels_log4j::DEBUG, _mod, _inst, _fmt, ##__VA_ARGS__ )
+#define dummy_logi_debug( _mod, _inst, _fmt, ... )      dummy_logger::log( log_levels_log4j::Debug, _mod, _inst, _fmt, ##__VA_ARGS__ )
 #define dummy_logi_trace( _mod, _inst, _fmt, ... )      dummy_logger::log( log_levels_log4j::TRACE, _mod, _inst, _fmt, ##__VA_ARGS__ )
 
 namespace dummy_logger {
