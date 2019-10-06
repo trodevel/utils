@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 11740 $ $Date:: 2019-06-13 #$ $Author: serge $
+// $Revision: 12061 $ $Date:: 2019-09-27 #$ $Author: serge $
 
 #include "gen_uuid.h"        // self
 

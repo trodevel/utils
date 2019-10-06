@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 12036 $ $Date:: 2019-09-25 #$ $Author: serge $
+// $Revision: 12061 $ $Date:: 2019-09-27 #$ $Author: serge $
 
 #ifndef DUMMY_LOGGER_H
 #define DUMMY_LOGGER_H
