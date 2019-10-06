@@ -19,13 +19,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 12104 $ $Date:: 2019-10-04 #$ $Author: serge $
+// $Revision: 12106 $ $Date:: 2019-10-05 #$ $Author: serge $
 
 #ifndef UTILS__EMAIL_SENDER_H
 #define UTILS__EMAIL_SENDER_H
 
 #include <string>
 #include <vector>
+
+namespace utils
+{
 
 // A non-threadsafe simple libcURL e-mail sender
 
@@ -74,5 +77,7 @@ private:
     std::string username_;
     std::string secret_;
 };
+
+} // namespace utils
 
 #endif  // UTILS__EMAIL_SENDER_H

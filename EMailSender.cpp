@@ -19,12 +19,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 12105 $ $Date:: 2019-10-04 #$ $Author: serge $
+// $Revision: 12106 $ $Date:: 2019-10-05 #$ $Author: serge $
 
 #include "EMailSender.h"    // self
 #include <curl/curl.h>
 #include <curl/easy.h>
 #include <cstring>          // memcpy
+
+namespace utils
+{
 
 EMailSender::EMailSender(
         const std::string   & host_name,
@@ -138,3 +141,5 @@ EMailSender::Context EMailSender::to_context(
 
     return res;
 }
+
+} // namespace utils
