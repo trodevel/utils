@@ -19,12 +19,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 12106 $ $Date:: 2019-10-05 #$ $Author: serge $
+// $Revision: 12118 $ $Date:: 2019-10-07 #$ $Author: serge $
 
 #include "EMailSender.h"    // self
 #include <curl/curl.h>
 #include <curl/easy.h>
 #include <cstring>          // memcpy
+#include <ctime>            // strftime
+
+#include "utils/gen_uuid.h"             // utils::gen_uuid
 
 namespace utils
 {
@@ -54,15 +57,19 @@ static size_t data_getter( void *ptr, size_t size, size_t nmemb, void *userp )
         return 0;
     }
 
-    if( context->current_line < context->lines.size() )
+    if( context->current_offset < context->content.size() )
     {
-        auto & line = context->lines[context->current_line];
+        auto block_size = size;
 
-        size_t len = line.size();
-        memcpy( ptr, line.c_str(), len );
-        context->current_line++;
+        if( context->current_offset + block_size >= context->content.size() )
+        {
+            block_size = context->content.size() - context->current_offset;
+        }
 
-        return len;
+        context->content.copy( reinterpret_cast<char*>( ptr ), block_size, context->current_offset );
+        context->current_offset += block_size;
+
+        return block_size;
     }
 
     return 0;
@@ -128,6 +135,66 @@ std::string EMailSender::add_angle_brackets( const std::string & s )
     return "<" + s + ">";
 }
 
+std::string EMailSender::get_date()
+{
+    const int RFC5322_TIME_LEN = 32;
+    time_t t;
+    struct tm *tm;
+
+    std::string res;
+    res.resize( RFC5322_TIME_LEN );
+
+    time( &t );
+    tm = localtime( &t );
+
+    std::strftime( &res[0], RFC5322_TIME_LEN, "%a, %d %b %Y %H:%M:%S %z", tm );
+
+    return res;
+}
+
+std::string EMailSender::generate_message_id( const std::string & from )
+{
+    auto id = utils::gen_uuid();
+
+    auto pos = from.find( '@' );
+
+    if( pos != from.npos )
+    {
+        id += from.substr( pos );
+    }
+
+    return id;
+}
+
+void EMailSender::append(
+        Context             * res,
+        const std::string   & line )
+{
+    res->content.append( line );
+    res->content.append( "\r\n" );
+}
+
+void EMailSender::append_header(
+        Context             * res,
+        const std::string   & from,
+        const std::string   & to,
+        const std::string   & cc,
+        const std::string   & subject,
+        const std::string   & date,
+        const std::string   & message_id )
+{
+    append( res, "Date: " + date );
+    append( res, "From: " + add_angle_brackets( from ) );
+    append( res, "To: " + add_angle_brackets( to ) );
+
+    if( cc.empty() == false )
+        append( res, "Cc: " + add_angle_brackets( to ) );
+
+    append( res, "Message-ID: " + add_angle_brackets( message_id ) );
+    append( res, "Subject: " + subject );
+    append( res, "" );  // empty line to divide headers from body, see RFC5322
+}
+
 EMailSender::Context EMailSender::to_context(
         const std::string   & from,
         const std::string   & to,
@@ -137,7 +204,20 @@ EMailSender::Context EMailSender::to_context(
 {
     Context res;
 
-    res.current_line    = 0;
+    res.current_offset    = 0;
+
+    auto date       = get_date();
+    auto message_id = generate_message_id( from );
+
+    append_header( & res,
+            from,
+            to,
+            cc,
+            subject,
+            date,
+            message_id );
+
+    append( & res, body );
 
     return res;
 }

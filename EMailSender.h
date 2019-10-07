@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 12106 $ $Date:: 2019-10-05 #$ $Author: serge $
+// $Revision: 12115 $ $Date:: 2019-10-07 #$ $Author: serge $
 
 #ifndef UTILS__EMAIL_SENDER_H
 #define UTILS__EMAIL_SENDER_H
@@ -55,13 +55,29 @@ public:
 
     struct Context
     {
-        std::vector<std::string>    lines;
-        std::size_t                 current_line;
+        std::string     content;
+        std::size_t     current_offset;
     };
 
 private:
 
     static std::string add_angle_brackets( const std::string & s );
+
+    static std::string get_date();
+    static std::string generate_message_id( const std::string & from );
+
+    static void append(
+            Context             * res,
+            const std::string   & line );
+
+    static void append_header(
+            Context             * res,
+            const std::string   & from,
+            const std::string   & to,
+            const std::string   & cc,
+            const std::string   & subject,
+            const std::string   & date,
+            const std::string   & message_id );
 
     static Context to_context(
             const std::string   & from,
