@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 12115 $ $Date:: 2019-10-07 #$ $Author: serge $
+// $Revision: 12127 $ $Date:: 2019-10-07 #$ $Author: serge $
 
 #ifndef UTILS__EMAIL_SENDER_H
 #define UTILS__EMAIL_SENDER_H
@@ -39,7 +39,7 @@ public:
             const std::string   & host_name,
             unsigned            port,
             const std::string   & username,
-            const std::string   & secret);
+            const std::string   & password );
 
     ~EMailSender();
 
@@ -91,7 +91,7 @@ private:
 
     std::string smtp_server_;
     std::string username_;
-    std::string secret_;
+    std::string password_;
 };
 
 } // namespace utils

@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 12118 $ $Date:: 2019-10-07 #$ $Author: serge $
+// $Revision: 12128 $ $Date:: 2019-10-07 #$ $Author: serge $
 
 #include "EMailSender.h"    // self
 #include <curl/curl.h>
@@ -27,7 +27,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include <cstring>          // memcpy
 #include <ctime>            // strftime
 
-#include "utils/gen_uuid.h"             // utils::gen_uuid
+#include "gen_uuid.h"       // utils::gen_uuid
 
 namespace utils
 {
@@ -36,7 +36,9 @@ EMailSender::EMailSender(
         const std::string   & host_name,
         unsigned            port,
         const std::string   & username,
-        const std::string   & secret)
+        const std::string   & password ):
+                username_( username ),
+                password_( password )
 {
     curl_ = curl_easy_init();
 
@@ -91,7 +93,7 @@ bool EMailSender::send(
     }
 
     curl_easy_setopt( curl_, CURLOPT_USERNAME, username_.c_str() );
-    curl_easy_setopt( curl_, CURLOPT_PASSWORD, secret_.c_str() );
+    curl_easy_setopt( curl_, CURLOPT_PASSWORD, password_.c_str() );
 
     curl_easy_setopt( curl_, CURLOPT_URL, smtp_server_.c_str() );
 

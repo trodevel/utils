@@ -68,9 +68,12 @@ void test_tz_cvt()
     test_tz_cvt_06( tzc );
 }
 
+void test_send_mail();
+
 int main()
 {
     test_tz_cvt();
+    test_send_mail();
 
     return 0;
 }

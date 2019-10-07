@@ -1,5 +1,7 @@
 #include "EMailSender.h"    // EMailSender
 
+#include "log_test.h"       // log_test
+
 #include <fstream>
 
 bool send_email(
@@ -26,6 +28,8 @@ bool read_config(
         std::string         * cc,
         std::string         * host_name,
         uint32_t            * port,
+        std::string         * user_name,
+        std::string         * password,
         const std::string   & filename )
 {
     try
@@ -39,6 +43,18 @@ bool read_config(
         std::getline( file, * host_name );
         std::getline( file, l );
         * port    = stoi( l );
+        std::getline( file, * user_name );
+        std::getline( file, * password );
+
+        std::cerr << "DEBUG:" << "\n"
+                << "from      = " << * from << "\n"
+                << "to        = " << * to << "\n"
+                << "cc        = " << * cc << "\n"
+                << "host_name = " << * host_name << "\n"
+                << "port      = " << * port << "\n"
+                << "user_name = " << * user_name << "\n"
+                << "password  = " << * password << "\n"
+                << std::endl;
 
         return true;
     }
@@ -46,4 +62,42 @@ bool read_config(
     {
         return false;
     }
+}
+
+void test_send_mail_kernel(
+        const std::string & name,
+        const std::string & filename )
+{
+    std::string from;
+    std::string to;
+    std::string cc;
+    std::string host_name;
+    uint32_t    port;
+    std::string user_name;
+    std::string password;
+
+    auto b = read_config( & from, & to, & cc, & host_name, & port, & user_name, & password, filename );
+
+    if( b == false )
+    {
+        log_test( name, b, true, "config loaded", "cannot load config file", filename );
+        return;
+    }
+
+    std::string error_msg;
+
+    b = send_email( & error_msg, from, to, cc, name, "email body - " + name, host_name, port, user_name, password );
+
+    log_test( name, b, true, "sent email", "cannot send email", error_msg );
+}
+
+
+void test_send_mail_01()
+{
+    test_send_mail_kernel( "test_send_mail_01", "send_mail_01.cfg" );
+}
+
+void test_send_mail()
+{
+    test_send_mail_01();
 }
