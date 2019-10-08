@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 12127 $ $Date:: 2019-10-07 #$ $Author: serge $
+// $Revision: 12133 $ $Date:: 2019-10-09 #$ $Author: serge $
 
 #ifndef UTILS__EMAIL_SENDER_H
 #define UTILS__EMAIL_SENDER_H
@@ -34,6 +34,14 @@ namespace utils
 
 class EMailSender
 {
+public:
+
+    struct EmailWithName
+    {
+        std::string     email;
+        std::string     name;
+    };
+
 public:
     EMailSender(
             const std::string   & host_name,
@@ -51,6 +59,15 @@ public:
             const std::string   & cc,
             const std::string   & subject,
             const std::string   & body );
+
+    bool send(
+            std::string         * error_msg,
+            const EmailWithName & from,
+            const EmailWithName & to,
+            const EmailWithName & cc,
+            const std::string   & subject,
+            const std::string   & body );
+
 public:
 
     struct Context
@@ -62,6 +79,7 @@ public:
 private:
 
     static std::string add_angle_brackets( const std::string & s );
+    static std::string to_string( const EmailWithName & s );
 
     static std::string get_date();
     static std::string generate_message_id( const std::string & from );
@@ -72,17 +90,17 @@ private:
 
     static void append_header(
             Context             * res,
-            const std::string   & from,
-            const std::string   & to,
-            const std::string   & cc,
+            const EmailWithName & from,
+            const EmailWithName & to,
+            const EmailWithName & cc,
             const std::string   & subject,
             const std::string   & date,
             const std::string   & message_id );
 
     static Context to_context(
-            const std::string   & from,
-            const std::string   & to,
-            const std::string   & cc,
+            const EmailWithName & from,
+            const EmailWithName & to,
+            const EmailWithName & cc,
             const std::string   & subject,
             const std::string   & body );
 

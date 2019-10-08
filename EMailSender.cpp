@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 12128 $ $Date:: 2019-10-07 #$ $Author: serge $
+// $Revision: 12132 $ $Date:: 2019-10-09 #$ $Author: serge $
 
 #include "EMailSender.h"    // self
 #include <curl/curl.h>
@@ -86,6 +86,18 @@ bool EMailSender::send(
         const std::string   & subject,
         const std::string   & body )
 {
+    return send( error_msg, { from, "" }, { to, "" }, { cc, "" }, subject, body );
+}
+
+// @return true - ok, false - error
+bool EMailSender::send(
+        std::string         * error_msg,
+        const EmailWithName & from,
+        const EmailWithName & to,
+        const EmailWithName & cc,
+        const std::string   & subject,
+        const std::string   & body )
+{
     if( curl_ == nullptr )
     {
         * error_msg = "failed to initialize curl";
@@ -99,15 +111,15 @@ bool EMailSender::send(
 
     curl_easy_setopt( curl_, CURLOPT_USE_SSL, (long )CURLUSESSL_ALL );
 
-    curl_easy_setopt( curl_, CURLOPT_MAIL_FROM, add_angle_brackets( from ).c_str() );
+    curl_easy_setopt( curl_, CURLOPT_MAIL_FROM, add_angle_brackets( from.email ).c_str() );
 
     struct curl_slist *recipients = nullptr;
 
-    if( to.empty() == false )
-        recipients = curl_slist_append( recipients, add_angle_brackets( to ).c_str() );
+    if( to.email.empty() == false )
+        recipients = curl_slist_append( recipients, add_angle_brackets( to.email ).c_str() );
 
-    if( cc.empty() == false )
-        recipients = curl_slist_append( recipients, add_angle_brackets( cc ).c_str() );
+    if( cc.email.empty() == false )
+        recipients = curl_slist_append( recipients, add_angle_brackets( cc.email ).c_str() );
 
     curl_easy_setopt( curl_, CURLOPT_MAIL_RCPT, recipients );
 
@@ -135,6 +147,18 @@ bool EMailSender::send(
 std::string EMailSender::add_angle_brackets( const std::string & s )
 {
     return "<" + s + ">";
+}
+
+std::string EMailSender::to_string( const EmailWithName & s )
+{
+    std::string res;
+
+    if( s.name.empty() == false )
+        res += s.name + " ";
+
+    res += add_angle_brackets( s.email );
+
+    return res;
 }
 
 std::string EMailSender::get_date()
@@ -178,19 +202,21 @@ void EMailSender::append(
 
 void EMailSender::append_header(
         Context             * res,
-        const std::string   & from,
-        const std::string   & to,
-        const std::string   & cc,
+        const EmailWithName & from,
+        const EmailWithName & to,
+        const EmailWithName & cc,
         const std::string   & subject,
         const std::string   & date,
         const std::string   & message_id )
 {
     append( res, "Date: " + date );
-    append( res, "From: " + add_angle_brackets( from ) );
-    append( res, "To: " + add_angle_brackets( to ) );
+    append( res, "From: " + to_string( from ) );
 
-    if( cc.empty() == false )
-        append( res, "Cc: " + add_angle_brackets( to ) );
+    if( to.email.empty() == false )
+        append( res, "To: " + to_string( to ) );
+
+    if( cc.email.empty() == false )
+        append( res, "Cc: " + to_string( to ) );
 
     append( res, "Message-ID: " + add_angle_brackets( message_id ) );
     append( res, "Subject: " + subject );
@@ -198,9 +224,9 @@ void EMailSender::append_header(
 }
 
 EMailSender::Context EMailSender::to_context(
-        const std::string   & from,
-        const std::string   & to,
-        const std::string   & cc,
+        const EmailWithName & from,
+        const EmailWithName & to,
+        const EmailWithName & cc,
         const std::string   & subject,
         const std::string   & body )
 {
@@ -209,7 +235,7 @@ EMailSender::Context EMailSender::to_context(
     res.current_offset    = 0;
 
     auto date       = get_date();
-    auto message_id = generate_message_id( from );
+    auto message_id = generate_message_id( from.email );
 
     append_header( & res,
             from,
