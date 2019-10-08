@@ -66,7 +66,8 @@ bool read_config(
 
 void test_send_mail_kernel(
         const std::string & name,
-        const std::string & filename )
+        const std::string & filename,
+        const std::string & body )
 {
     std::string from;
     std::string to;
@@ -86,7 +87,7 @@ void test_send_mail_kernel(
 
     std::string error_msg;
 
-    b = send_email( & error_msg, from, to, cc, name, "email body - " + name, host_name, port, user_name, password );
+    b = send_email( & error_msg, from, to, cc, name, body, host_name, port, user_name, password );
 
     log_test( name, b, true, "sent email", "cannot send email", error_msg );
 }
@@ -94,10 +95,24 @@ void test_send_mail_kernel(
 
 void test_send_mail_01()
 {
-    test_send_mail_kernel( "test_send_mail_01", "send_mail_01.cfg" );
+    test_send_mail_kernel( "test_send_mail_01", "send_mail_01.cfg", "one-liner" );
+}
+
+void test_send_mail_02()
+{
+    static const std::string body =
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\n"
+            "sed do eiusmod tempor incididunt ut labore et dolore magna\n"
+            "aliqua. Ut enim ad minim veniam, quis nostrud exercitation\n"
+            "ullamco laboris nisi ut aliquip ex ea commodo consequat.\n"
+            "Duis aute irure dolor in reprehenderit in voluptate velit\n"
+            "esse cillum dolore eu fugiat nulla pariatur. Excepteur sint\n";
+
+    test_send_mail_kernel( "test_send_mail_02", "send_mail_01.cfg", body );
 }
 
 void test_send_mail()
 {
     test_send_mail_01();
+    test_send_mail_02();
 }

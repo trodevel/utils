@@ -56,16 +56,23 @@ void test_tz_cvt_06( utils::TimeZoneConverter & tzc )
 
 void test_tz_cvt()
 {
-    utils::TimeZoneConverter tzc;
+    try
+    {
+        utils::TimeZoneConverter tzc;
 
-    tzc.init( "date_time_zonespec.csv" );
+        tzc.init( "date_time_zonespec.csv" );
 
-    test_tz_cvt_01( tzc );
-    test_tz_cvt_02( tzc );
-    test_tz_cvt_03( tzc );
-    test_tz_cvt_04( tzc );
-    test_tz_cvt_05( tzc );
-    test_tz_cvt_06( tzc );
+        test_tz_cvt_01( tzc );
+        test_tz_cvt_02( tzc );
+        test_tz_cvt_03( tzc );
+        test_tz_cvt_04( tzc );
+        test_tz_cvt_05( tzc );
+        test_tz_cvt_06( tzc );
+    }
+    catch( std::exception & e )
+    {
+        std::cerr << "test failed - " << e.what() << std::endl;
+    }
 }
 
 void test_send_mail();
