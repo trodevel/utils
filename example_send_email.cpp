@@ -4,28 +4,39 @@
 
 #include <fstream>
 
-bool send_email(
-        std::string         * error_msg,
-        const std::string   & from,
-        const std::string   & to,
-        const std::string   & cc,
-        const std::string   & subject,
-        const std::string   & body,
-        const std::string   & host_name,
-        uint32_t            port,
-        const std::string   & user_name,
-        const std::string   & password
-        )
+void to_EmailWithName(
+        utils::EMailSender::EMailWithName   * res,
+        const std::string                   & l )
 {
-    utils::EMailSender s( host_name, port, user_name, password );
+    auto pos = l.find( ' ' );
 
-    return s.send( error_msg, from, to, cc, subject, body );
+    if( pos == std::string::npos )
+    {
+        res->email  = l;
+        res->name   = "";
+
+        return;
+    }
+
+    res->email  = l.substr( 0, pos );
+    res->name   = l.substr( pos + 1 );
+}
+
+std::string to_string( const utils::EMailSender::EMailWithName & s )
+{
+    auto res = s.email;
+
+    if( s.name.empty() == false )
+        res += " " + s.name;
+
+    return res;
 }
 
 bool read_config(
-        std::string         * from,
-        std::string         * to,
-        std::string         * cc,
+        utils::EMailSender::EMailWithName   * from,
+        utils::EMailSender::EMailWithName   * to,
+        utils::EMailSender::EMailWithName   * cc,
+        utils::EMailSender::EMailWithName   * bcc,
         std::string         * host_name,
         uint32_t            * port,
         std::string         * user_name,
@@ -37,9 +48,18 @@ bool read_config(
         std::ifstream file( filename );
         std::string l;
 
-        std::getline( file, * from );
-        std::getline( file, * to );
-        std::getline( file, * cc );
+        std::getline( file, l );
+        to_EmailWithName( from, l );
+
+        std::getline( file, l );
+        to_EmailWithName( to, l );
+
+        std::getline( file, l );
+        to_EmailWithName( cc, l );
+
+        std::getline( file, l );
+        to_EmailWithName( bcc, l );
+
         std::getline( file, * host_name );
         std::getline( file, l );
         * port    = stoi( l );
@@ -47,13 +67,15 @@ bool read_config(
         std::getline( file, * password );
 
         std::cerr << "DEBUG:" << "\n"
-                << "from      = " << * from << "\n"
-                << "to        = " << * to << "\n"
-                << "cc        = " << * cc << "\n"
+                << "filename  = " << filename << "\n"
+                << "from      = " << to_string( * from ) << "\n"
+                << "to        = " << to_string( * to ) << "\n"
+                << "cc        = " << to_string( * cc ) << "\n"
+                << "bcc       = " << to_string( * bcc ) << "\n"
                 << "host_name = " << * host_name << "\n"
                 << "port      = " << * port << "\n"
                 << "user_name = " << * user_name << "\n"
-                << "password  = " << * password << "\n"
+                << "password  = " << "..." << "\n"
                 << std::endl;
 
         return true;
@@ -69,15 +91,17 @@ void test_send_mail_kernel(
         const std::string & filename,
         const std::string & body )
 {
-    std::string from;
-    std::string to;
-    std::string cc;
+    utils::EMailSender::EMailWithName from;
+    utils::EMailSender::EMailWithName to;
+    utils::EMailSender::EMailWithName cc;
+    utils::EMailSender::EMailWithName bcc;
+
     std::string host_name;
     uint32_t    port;
     std::string user_name;
     std::string password;
 
-    auto b = read_config( & from, & to, & cc, & host_name, & port, & user_name, & password, filename );
+    auto b = read_config( & from, & to, & cc, & bcc, & host_name, & port, & user_name, & password, filename );
 
     if( b == false )
     {
@@ -85,9 +109,11 @@ void test_send_mail_kernel(
         return;
     }
 
+    utils::EMailSender s( host_name, port, user_name, password );
+
     std::string error_msg;
 
-    b = send_email( & error_msg, from, to, cc, name, body, host_name, port, user_name, password );
+    b = s.send( & error_msg, from, to, cc, bcc, name, body );
 
     log_test( name, b, true, "sent email", "cannot send email", error_msg );
 }
@@ -111,8 +137,40 @@ void test_send_mail_02()
     test_send_mail_kernel( "test_send_mail_02", "send_mail_01.cfg", body );
 }
 
+void test_send_mail_03()
+{
+    static const std::string body =
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit,\n"
+            "sed do eiusmod tempor incididunt ut labore et dolore magna\n"
+            "aliqua. Ut enim ad minim veniam, quis nostrud exercitation\n"
+            "ullamco laboris nisi ut aliquip ex ea commodo consequat.\n"
+            "Duis aute irure dolor in reprehenderit in voluptate velit\n"
+            "esse cillum dolore eu fugiat nulla pariatur. Excepteur sint\n";
+
+    test_send_mail_kernel( "test_send_mail_03", "send_mail_02.cfg", body );
+}
+
+void test_send_mail_04()
+{
+    test_send_mail_kernel( "test_send_mail_04", "send_mail_03.cfg", "one-liner" );
+}
+
+void test_send_mail_05()
+{
+    test_send_mail_kernel( "test_send_mail_05", "send_mail_04.cfg", "one-liner" );
+}
+
+void test_send_mail_06()
+{
+    test_send_mail_kernel( "test_send_mail_06", "send_mail_05.cfg", "one-liner" );
+}
+
 void test_send_mail()
 {
     test_send_mail_01();
     test_send_mail_02();
+    test_send_mail_03();
+    test_send_mail_04();
+    test_send_mail_05();
+    test_send_mail_06();
 }

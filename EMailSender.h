@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 12133 $ $Date:: 2019-10-09 #$ $Author: serge $
+// $Revision: 12142 $ $Date:: 2019-10-09 #$ $Author: serge $
 
 #ifndef UTILS__EMAIL_SENDER_H
 #define UTILS__EMAIL_SENDER_H
@@ -36,7 +36,7 @@ class EMailSender
 {
 public:
 
-    struct EmailWithName
+    struct EMailWithName
     {
         std::string     email;
         std::string     name;
@@ -57,14 +57,16 @@ public:
             const std::string   & from,
             const std::string   & to,
             const std::string   & cc,
+            const std::string   & bcc,
             const std::string   & subject,
             const std::string   & body );
 
     bool send(
             std::string         * error_msg,
-            const EmailWithName & from,
-            const EmailWithName & to,
-            const EmailWithName & cc,
+            const EMailWithName & from,
+            const EMailWithName & to,
+            const EMailWithName & cc,
+            const EMailWithName & bcc,
             const std::string   & subject,
             const std::string   & body );
 
@@ -79,7 +81,7 @@ public:
 private:
 
     static std::string add_angle_brackets( const std::string & s );
-    static std::string to_string( const EmailWithName & s );
+    static std::string to_string( const EMailWithName & s );
 
     static std::string get_date();
     static std::string generate_message_id( const std::string & from );
@@ -90,17 +92,19 @@ private:
 
     static void append_header(
             Context             * res,
-            const EmailWithName & from,
-            const EmailWithName & to,
-            const EmailWithName & cc,
+            const EMailWithName & from,
+            const EMailWithName & to,
+            const EMailWithName & cc,
+            const EMailWithName & bcc,
             const std::string   & subject,
             const std::string   & date,
             const std::string   & message_id );
 
     static Context to_context(
-            const EmailWithName & from,
-            const EmailWithName & to,
-            const EmailWithName & cc,
+            const EMailWithName & from,
+            const EMailWithName & to,
+            const EMailWithName & cc,
+            const EMailWithName & bcc,
             const std::string   & subject,
             const std::string   & body );
 
