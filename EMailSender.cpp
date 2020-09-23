@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 12142 $ $Date:: 2019-10-09 #$ $Author: serge $
+// $Revision: 13827 $ $Date:: 2020-09-23 #$ $Author: serge $
 
 #include "EMailSender.h"    // self
 #include <curl/curl.h>

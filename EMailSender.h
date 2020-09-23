@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 12142 $ $Date:: 2019-10-09 #$ $Author: serge $
+// $Revision: 12173 $ $Date:: 2019-10-15 #$ $Author: serge $
 
 #ifndef UTILS__EMAIL_SENDER_H
 #define UTILS__EMAIL_SENDER_H
