@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 13835 $ $Date:: 2020-09-25 #$ $Author: serge $
+// $Revision: 13837 $ $Date:: 2020-09-25 #$ $Author: serge $
 
 #include "EMailSender.h"    // self
 #include <curl/curl.h>
@@ -172,7 +172,7 @@ std::string EMailSender::to_string( const EMailWithName & s )
     std::string res;
 
     if( s.name.empty() == false )
-        res += s.name + " ";
+        res += '"' + s.name + '"' + " ";
 
     res += add_angle_brackets( s.email );
 
