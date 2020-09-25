@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-// $Revision: 13827 $ $Date:: 2020-09-23 #$ $Author: serge $
+// $Revision: 13835 $ $Date:: 2020-09-25 #$ $Author: serge $
 
 #include "EMailSender.h"    // self
 #include <curl/curl.h>
@@ -28,6 +28,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 #include <ctime>            // strftime
 
 #include "gen_uuid.h"       // utils::gen_uuid
+
+#ifdef EMAIL_SENDER_DEBUG
+#include <iostream>
+#include "../hexdump/Hexdump.hpp"
+#endif // EMAIL_SENDER_DEBUG
 
 namespace utils
 {
@@ -67,6 +72,10 @@ static size_t data_getter( void *ptr, size_t size, size_t nmemb, void *userp )
         {
             block_size = context->content.size() - context->current_offset;
         }
+
+#ifdef EMAIL_SENDER_DEBUG
+        std::cerr << "content " << block_size << ":" << context->content.substr( context->current_offset, block_size ) << "\n";
+#endif
 
         context->content.copy( reinterpret_cast<char*>( ptr ), block_size, context->current_offset );
         context->current_offset += block_size;
@@ -130,6 +139,10 @@ bool EMailSender::send(
 
     auto context = to_context( from, to, cc, bcc, subject, body );
 
+#ifdef EMAIL_SENDER_DEBUG
+    std::cerr << "context:\n" << Hexdump( context.content.c_str(), context.content.size() ) << "\n";
+#endif // EMAIL_SENDER_DEBUG
+
     curl_easy_setopt( curl_, CURLOPT_READFUNCTION, data_getter );
     curl_easy_setopt( curl_, CURLOPT_READDATA, & context );
     curl_easy_setopt( curl_, CURLOPT_UPLOAD, 1L );
@@ -178,7 +191,9 @@ std::string EMailSender::get_date()
     time( &t );
     tm = localtime( &t );
 
-    std::strftime( &res[0], RFC5322_TIME_LEN, "%a, %d %b %Y %H:%M:%S %z", tm );
+    auto size = std::strftime( &res[0], RFC5322_TIME_LEN, "%a, %d %b %Y %H:%M:%S %z", tm );
+
+    res.resize( size );
 
     return res;
 }
